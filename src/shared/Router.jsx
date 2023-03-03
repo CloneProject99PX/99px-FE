@@ -4,7 +4,7 @@ import Login from "../pages/Login";
 import Main from "../pages/Main";
 import Onboarding from "../pages/Onboarding";
 import Photo from "../pages/Photo";
-import Signup from "../pages/SignUp";
+import Signup from "../pages/Signup";
 
 const Router = () => {
   return (
