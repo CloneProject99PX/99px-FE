@@ -14,6 +14,8 @@ const Photo = () => {
   const [replyWindow, setReplyWindow] = useState(false);
   const [comment, setComment] = useState('');
   const [height, setHeight] = useState(0);
+  const [follow, setFollow] = useState(false);
+  const [followText, setFollowText] = useState('Following');
   const onTextAreaHeightHandler = (e) => {
     const scHeight = e.target.scrollHeight;
     setHeight(scHeight);
@@ -102,7 +104,20 @@ const Photo = () => {
                   by Carsten Meyerdierks<span>•</span>
                 </span>
 
-                <FollowButton>Following</FollowButton>
+                <FollowButton
+                  textcolor={follow}
+                  onMouseOver={() => {
+                    setFollowText('Unfollow');
+                  }}
+                  onMouseOut={() => {
+                    setFollowText('Following');
+                  }}
+                  onClick={() => {
+                    setFollow(!follow);
+                  }}
+                >
+                  {follow ? 'Follow' : followText}
+                </FollowButton>
               </div>
             </div>
           </ProFileBox>
@@ -525,7 +540,8 @@ const TextWrap = styled.div`
   align-items: center;
 `;
 const FollowButton = styled.span`
-  color: #757575;
+  color: ${(props) => (props.textcolor ? '#2a86f7' : '#757575')};
+  /* #757575 */
   cursor: pointer;
   &:hover {
     color: #2a86f7;
