@@ -16,8 +16,9 @@ import { SlFire } from 'react-icons/sl';
 import { AiOutlineBarChart } from 'react-icons/ai';
 import { FaUserCircle } from 'react-icons/fa';
 import { useState, useRef } from 'react';
-import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+// import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 import { useNavigate } from 'react-router-dom';
+import useInput from '../hooks/useInput';
 
 const useFullscreen = () => {
   const element = useRef();
@@ -38,449 +39,324 @@ const Photo = () => {
   const [like, setLike] = useState(false);
   const [postWindow, setPostWindow] = useState(false);
   const [replyWindow, setReplyWindow] = useState(false);
-  const [comment, setComment] = useState('');
   const [height, setHeight] = useState(0);
   const [follow, setFollow] = useState(false);
   const [followText, setFollowText] = useState('Following');
+  const [comment, commentChangeHandler] = useInput();
+
+  const [reComment, reCommentChangeHandler] = useInput();
 
   const navigate = useNavigate();
   const onTextAreaHeightHandler = (e) => {
     const scHeight = e.target.scrollHeight;
     setHeight(scHeight);
   };
-  const CommentChangeHandler = (e) => {
-    setComment(e.target.value);
-  };
 
   return (
-    <Body>
-      <ImgBox ref={element}>
-        <ImgWrap>
-          <div
-            style={{
-              zIndex: '1',
-              position: 'absolute',
-              width: '25vw',
-              height: '90%',
-
-              left: '5%',
-            }}
-          >
-            <IconWrap>
-              <TbArrowNarrowLeft
-                onClick={() => {
-                  navigate(-1);
-                }}
-                size="40"
-                color="white"
-              ></TbArrowNarrowLeft>
-            </IconWrap>
-            <BoxButton>
-              <RxCaretLeft size="40" color="white"></RxCaretLeft>
-            </BoxButton>
-          </div>
-
-          <img
-            style={{ position: 'relative' }}
-            height="100%"
-            src="https://static01.nyt.com/images/2022/07/13/reader-center/15DAILY-webb-audio-app/15DAILY-webb-audio-app-superJumbo-v3.jpg?quality=75&auto=webp"
-          ></img>
-          <div
-            style={{
-              zIndex: '1',
-              position: 'absolute',
-              width: '25vw',
-              height: '90%',
-
-              right: '5%',
-            }}
-          >
-            <IconWrap
-              onClick={() => {
-                setFullScreen(!fullScreen);
-                if (!fullScreen) {
-                  triggerFull();
-                } else {
-                  exitFull();
-                }
-              }}
-              direction="right"
-            >
-              {!fullScreen ? (
-                <TbArrowsDiagonal size="36" color="white"></TbArrowsDiagonal>
-              ) : (
-                <TbArrowsDiagonalMinimize2
-                  size="36"
-                  color="white"
-                ></TbArrowsDiagonalMinimize2>
-              )}
-            </IconWrap>
-            <BoxButton direction="right">
-              <RxCaretRight size="40" color="white"></RxCaretRight>
-            </BoxButton>
-          </div>
-        </ImgWrap>
-      </ImgBox>
-      <Container>
-        {/* 컨텐츠 영역 */}
-        <ContentContainer>
-          <IconContainer>
-            <IconWrap
-              onClick={() => {
-                setLike(!like);
-              }}
-            >
-              {!like ? (
-                <IoMdHeartEmpty size="28"></IoMdHeartEmpty>
-              ) : (
-                <IoMdHeart color="#B2293B" size="28"></IoMdHeart>
-              )}
-            </IconWrap>
-            <IconWrap>
-              <BsPlusSquare size="22"></BsPlusSquare>
-            </IconWrap>
-            <IconWrap>
-              <RxShare1 size="24"></RxShare1>
-            </IconWrap>
-            <IconWrap>
-              <BsThreeDots size="24"></BsThreeDots>
-            </IconWrap>
-          </IconContainer>
-          <ProFileBox>
-            <ProFileImg src="https://drscdn.500px.org/user_avatar/1544417/q%3D85_w%3D100_h%3D100/v2?webp=true&v=7&sig=f89f718fcec7996e21e632dcbdd9ecff1d7202ad8c978e12ba7f166bb73555d8"></ProFileImg>
+    <>
+      <Body>
+        <ImgBox ref={element}>
+          <ImgWrap>
             <div
               style={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: '8px',
+                zIndex: '1',
+                position: 'absolute',
+                width: '25vw',
+                height: '90%',
+
+                left: '5%',
               }}
             >
-              <BigString>Full Moon Night In Lapland</BigString>
-              <div>
-                <span style={{ cursor: 'pointer' }}>
-                  by Carsten Meyerdierks<span>•</span>
-                </span>
-
-                <FollowButton
-                  textcolor={follow}
-                  onMouseOver={() => {
-                    setFollowText('Unfollow');
-                  }}
-                  onMouseOut={() => {
-                    setFollowText('Following');
-                  }}
+              <IconWrap>
+                <TbArrowNarrowLeft
                   onClick={() => {
-                    setFollow(!follow);
+                    navigate(-1);
                   }}
-                >
-                  {follow ? followText : 'Follow'}
-                </FollowButton>
-              </div>
+                  size="40"
+                  color="white"
+                ></TbArrowNarrowLeft>
+              </IconWrap>
+              <BoxButton>
+                <RxCaretLeft size="40" color="white"></RxCaretLeft>
+              </BoxButton>
             </div>
-          </ProFileBox>
-          <div
-            style={{
-              width: '100%',
-              height: '29px',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <CiLocationOn size="24"></CiLocationOn>
-            <p>
-              <span style={{ borderBottom: '1px dashed' }}>Finnland</span>
-              <span style={{ fontWeight: '700', marginLeft: '24px' }}>
-                Uploaded{' '}
-              </span>
-              7 days ago
-            </p>
-          </div>
-          <TextWrap>www.instagram.com/carstenmeyerdierks</TextWrap>
-          <div
-            style={{
-              minHeight: '60px',
-              display: 'flex',
-              marginBottom: '16px',
-              flexWrap: 'wrap',
-            }}
-          >
+
+            <img
+              style={{
+                position: 'static',
+
+                width: 'auto',
+              }}
+              src="https://static01.nyt.com/images/2022/07/13/reader-center/15DAILY-webb-audio-app/15DAILY-webb-audio-app-superJumbo-v3.jpg?quality=75&auto=webp"
+            ></img>
             <div
               style={{
-                // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
+                zIndex: '1',
+                position: 'absolute',
+                width: '25vw',
+                height: '90%',
 
-                flexDirection: 'column',
+                right: '5%',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
+              <IconWrap
+                onClick={() => {
+                  setFullScreen(!fullScreen);
+                  if (!fullScreen) {
+                    return triggerFull();
+                  }
+                  if (fullScreen) {
+                    return exitFull();
+                  }
+                }}
+                direction="right"
+              >
+                {!fullScreen ? (
+                  <TbArrowsDiagonal size="36" color="white"></TbArrowsDiagonal>
+                ) : (
+                  <TbArrowsDiagonalMinimize2
+                    size="36"
+                    color="white"
+                  ></TbArrowsDiagonalMinimize2>
+                )}
+              </IconWrap>
+              <BoxButton direction="right">
+                <RxCaretRight size="40" color="white"></RxCaretRight>
+              </BoxButton>
+            </div>
+          </ImgWrap>
+        </ImgBox>
+        <Container>
+          {/* 컨텐츠 영역 */}
+          <ContentContainer>
+            <IconContainer>
+              <IconWrap
+                onClick={() => {
+                  setLike(!like);
                 }}
               >
-                Highest Pulse
-                <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
-              </div>
-              <BigString>97.4</BigString>
-            </div>
-            <div
-              style={{
-                // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
-
-                flexDirection: 'column',
-              }}
-            >
+                {!like ? (
+                  <IoMdHeartEmpty size="28"></IoMdHeartEmpty>
+                ) : (
+                  <IoMdHeart color="#B2293B" size="28"></IoMdHeart>
+                )}
+              </IconWrap>
+              <IconWrap>
+                <BsPlusSquare size="22"></BsPlusSquare>
+              </IconWrap>
+              <IconWrap>
+                <RxShare1 size="24"></RxShare1>
+              </IconWrap>
+              <IconWrap>
+                <BsThreeDots size="24"></BsThreeDots>
+              </IconWrap>
+            </IconContainer>
+            <ProFileBox>
+              <ProFileImg src="https://drscdn.500px.org/user_avatar/1544417/q%3D85_w%3D100_h%3D100/v2?webp=true&v=7&sig=f89f718fcec7996e21e632dcbdd9ecff1d7202ad8c978e12ba7f166bb73555d8"></ProFileImg>
               <div
                 style={{
+                  height: '100%',
                   display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Impressions
-                <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
-              </div>
-              <BigString>12.5K</BigString>
-            </div>
-            <div
-              style={{
-                // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
-
-                flexDirection: 'column',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Popular
-                <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
-              </div>
-              <div>
-                <SlFire size="24"></SlFire>
-              </div>
-            </div>
-          </div>
-          <TextWrap>
-            <TextClick>
-              452 people liked this photo
-              <BsChevronRight></BsChevronRight>
-            </TextClick>
-          </TextWrap>
-          <div
-            style={{
-              padding: '16px',
-              marginBottom: '24px',
-              border: '1px solid #D7D8DB',
-              borderLeft: '4px solid #2A86F7 ',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
-            }}
-          >
-            <AiOutlineBarChart size="60px"></AiOutlineBarChart>
-            <div>
-              Learn how people are engaging with your photos.
-              <span
-                style={{
-                  color: '#2A86F7',
-                  fontWeight: '700',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
                   marginLeft: '8px',
                 }}
               >
-                View Statistics
-              </span>
-            </div>
-          </div>
-          <TextWrap>
-            <span style={{ fontWeight: '700', marginRight: '24px' }}>
-              Category:
-            </span>
-            <span>
-              <TextClick>
-                Landscapes<BsChevronRight></BsChevronRight>
-              </TextClick>
-            </span>
-          </TextWrap>
-          <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap' }}>
-            <CategoryBox>Horizontal</CategoryBox>
-            <CategoryBox>No People</CategoryBox>
-            <CategoryBox>Snow</CategoryBox>
-            <CategoryBox>Photography</CategoryBox>
-            <CategoryBox>Outdoors</CategoryBox>
-            <CategoryBox>Night</CategoryBox>
-            <CategoryBox>Winter</CategoryBox>
-            <CategoryBox>Sky</CategoryBox>
-          </div>
-        </ContentContainer>
-        {/* 댓글영역 */}
-        <CommentContainer>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              marginBottom: '16px',
-            }}
-          >
-            <div style={{ margin: '8px 0 0' }}>
-              <FaUserCircle size="36" color="lightgray"></FaUserCircle>
-            </div>
-            <StWrapper>
-              <TextArea
-                onFocus={() => {
-                  setPostWindow(true);
-                }}
-                value={comment}
-                onChange={CommentChangeHandler}
-                height={height}
-                onKeyUp={onTextAreaHeightHandler}
-                placeholder="Add a comment"
-              ></TextArea>
-              {postWindow === true && (
-                <div
-                  style={{
-                    height: '34px',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    paddingTop: '8px',
-                  }}
-                >
-                  <button
+                <BigString>Full Moon Night In Lapland</BigString>
+                <div>
+                  <span style={{ cursor: 'pointer' }}>
+                    by Carsten Meyerdierks<span>•</span>
+                  </span>
+
+                  <FollowButton
+                    textcolor={follow}
+                    onMouseOver={() => {
+                      setFollowText('Unfollow');
+                    }}
+                    onMouseOut={() => {
+                      setFollowText('Following');
+                    }}
                     onClick={() => {
-                      setPostWindow(false);
-                    }}
-                    style={{
-                      width: '92px',
-
-                      backgroundColor: 'inherit',
-                      border: 'none',
-                      color: 'rgb(8, 112, 209)',
-                      fontWeight: '600',
-                      fontSize: '16px',
-                      cursor: 'pointer',
+                      setFollow(!follow);
                     }}
                   >
-                    Cancle
-                  </button>
-                  <button
-                    style={{
-                      width: '130px',
-                      borderRadius: '28px',
-                      border: 'none',
-                      backgroundColor: '#B6B9BB',
-                      color: 'white',
-                      fontWeight: '600',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Post
-                  </button>
+                    {follow ? followText : 'Follow'}
+                  </FollowButton>
                 </div>
-              )}
-            </StWrapper>
-          </div>
-          <TextWrap>
-            <span style={{ fontWeight: '700', marginRight: '24px' }}>
-              8 Comments
-            </span>
-          </TextWrap>
-          <CommentBlock>
-            <StReplyContainer>
-              <StSmallProfilePhoto src="https://drscdn.500px.org/user_avatar/904746/q%3D85_w%3D50_h%3D50/v2?webp=true&v=1&sig=7190608940e8ac858e19b14b57bc5f6e2b7a8a3b4196f76a6814d1c4dacaec0c"></StSmallProfilePhoto>
-              <StReplyWrap>
-                <div
-                  style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <span style={{ fontWeight: '700', marginRight: '24px' }}>
-                    <TextClick> Snezana Petrovic</TextClick>
-                  </span>
-                  <span style={{ fontSize: '.7rem' }}>1w</span>
-                </div>
-                <div
-                  style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  Fantastic
-                  <span>
-                    <BsThreeDots
-                      size="12"
-                      style={{ marginRight: '8px' }}
-                    ></BsThreeDots>
-                  </span>
-                </div>
-                <div
-                  style={{
-                    marginTop: '4px',
-                    height: '21px',
-
-                    paddingLeft: '4px',
-
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span
-                    onClick={() => {
-                      setReplyWindow(!replyWindow);
-                    }}
-                    style={{
-                      color: '#2A86F7',
-                      fontSize: '.9rem',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Reply
-                  </span>
-                </div>
-              </StReplyWrap>
-            </StReplyContainer>
-            {replyWindow ? (
+              </div>
+            </ProFileBox>
+            <div
+              style={{
+                width: '100%',
+                height: '29px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+              }}
+            >
+              <CiLocationOn size="24"></CiLocationOn>
+              <p>
+                <span style={{ borderBottom: '1px dashed' }}>Finnland</span>
+                <span style={{ fontWeight: '700', marginLeft: '24px' }}>
+                  Uploaded{' '}
+                </span>
+                7 days ago
+              </p>
+            </div>
+            <TextWrap>www.instagram.com/carstenmeyerdierks</TextWrap>
+            <div
+              style={{
+                minHeight: '60px',
+                display: 'flex',
+                marginBottom: '16px',
+                flexWrap: 'wrap',
+              }}
+            >
               <div
                 style={{
+                  // height: '100%',
+                  margin: '0 32px 8px 0',
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  marginBottom: '16px',
+
+                  flexDirection: 'column',
                 }}
               >
-                <div style={{ margin: '8px 0 0' }}>
-                  <FaUserCircle size="36" color="lightgray"></FaUserCircle>
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: '8px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Highest Pulse
+                  <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
                 </div>
-                <StWrapper>
-                  <TextArea
-                    onFocus={() => {
-                      setPostWindow(true);
-                    }}
-                    value={comment}
-                    onChange={CommentChangeHandler}
-                    height={height}
-                    onKeyUp={onTextAreaHeightHandler}
-                    placeholder="Add a comment"
-                  ></TextArea>
+                <BigString>97.4</BigString>
+              </div>
+              <div
+                style={{
+                  // height: '100%',
+                  margin: '0 32px 8px 0',
+                  display: 'flex',
 
+                  flexDirection: 'column',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: '8px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Impressions
+                  <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
+                </div>
+                <BigString>12.5K</BigString>
+              </div>
+              <div
+                style={{
+                  // height: '100%',
+                  margin: '0 32px 8px 0',
+                  display: 'flex',
+
+                  flexDirection: 'column',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    marginBottom: '8px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Popular
+                  <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
+                </div>
+                <div>
+                  <SlFire size="24"></SlFire>
+                </div>
+              </div>
+            </div>
+            <TextWrap>
+              <TextClick>
+                452 people liked this photo
+                <BsChevronRight></BsChevronRight>
+              </TextClick>
+            </TextWrap>
+            <div
+              style={{
+                padding: '16px',
+                marginBottom: '24px',
+                border: '1px solid #D7D8DB',
+                borderLeft: '4px solid #2A86F7 ',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+              }}
+            >
+              <AiOutlineBarChart size="60px"></AiOutlineBarChart>
+              <div>
+                Learn how people are engaging with your photos.
+                <span
+                  style={{
+                    color: '#2A86F7',
+                    fontWeight: '700',
+                    marginLeft: '8px',
+                  }}
+                >
+                  View Statistics
+                </span>
+              </div>
+            </div>
+            <TextWrap>
+              <span style={{ fontWeight: '700', marginRight: '24px' }}>
+                Category:
+              </span>
+              <span>
+                <TextClick>
+                  Landscapes<BsChevronRight></BsChevronRight>
+                </TextClick>
+              </span>
+            </TextWrap>
+            <div
+              style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap' }}
+            >
+              <CategoryBox>Horizontal</CategoryBox>
+              <CategoryBox>No People</CategoryBox>
+              <CategoryBox>Snow</CategoryBox>
+              <CategoryBox>Photography</CategoryBox>
+              <CategoryBox>Outdoors</CategoryBox>
+              <CategoryBox>Night</CategoryBox>
+              <CategoryBox>Winter</CategoryBox>
+              <CategoryBox>Sky</CategoryBox>
+            </div>
+          </ContentContainer>
+          {/* 댓글영역 */}
+          <CommentContainer>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                marginBottom: '16px',
+              }}
+            >
+              <div style={{ margin: '8px 0 0' }}>
+                <FaUserCircle size="36" color="lightgray"></FaUserCircle>
+              </div>
+              <StWrapper>
+                <TextArea
+                  onFocus={() => {
+                    setPostWindow(true);
+                  }}
+                  value={comment}
+                  onChange={commentChangeHandler}
+                  height={height}
+                  onKeyUp={onTextAreaHeightHandler}
+                  placeholder="Add a comment"
+                ></TextArea>
+                {postWindow === true && (
                   <div
                     style={{
                       height: '34px',
@@ -492,7 +368,7 @@ const Photo = () => {
                   >
                     <button
                       onClick={() => {
-                        setReplyWindow(false);
+                        setPostWindow(false);
                       }}
                       style={{
                         width: '92px',
@@ -507,34 +383,149 @@ const Photo = () => {
                     >
                       Cancle
                     </button>
-                    <button
+                    <StPostButton post={comment}>Post</StPostButton>
+                  </div>
+                )}
+              </StWrapper>
+            </div>
+            <TextWrap>
+              <span style={{ fontWeight: '700', marginRight: '24px' }}>
+                8 Comments
+              </span>
+            </TextWrap>
+            <CommentBlock>
+              <StReplyContainer>
+                <StSmallProfilePhoto src="https://drscdn.500px.org/user_avatar/904746/q%3D85_w%3D50_h%3D50/v2?webp=true&v=1&sig=7190608940e8ac858e19b14b57bc5f6e2b7a8a3b4196f76a6814d1c4dacaec0c"></StSmallProfilePhoto>
+                <StReplyWrap>
+                  <div
+                    style={{
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span style={{ fontWeight: '700', marginRight: '24px' }}>
+                      <TextClick> Snezana Petrovic</TextClick>
+                    </span>
+                    <span style={{ fontSize: '.7rem' }}>1w</span>
+                  </div>
+                  <div
+                    style={{
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    Fantastic
+                    <span>
+                      <BsThreeDots
+                        size="12"
+                        style={{ marginRight: '8px' }}
+                      ></BsThreeDots>
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: '4px',
+                      height: '21px',
+
+                      paddingLeft: '4px',
+
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span
+                      onClick={() => {
+                        setReplyWindow(!replyWindow);
+                      }}
                       style={{
-                        width: '130px',
-                        borderRadius: '28px',
-                        border: 'none',
-                        backgroundColor: '#B6B9BB',
-                        color: 'white',
-                        fontWeight: '600',
-                        fontSize: '16px',
+                        color: '#2A86F7',
+                        fontSize: '.9rem',
                         cursor: 'pointer',
                       }}
                     >
-                      Post
-                    </button>
+                      Reply
+                    </span>
                   </div>
-                </StWrapper>
-              </div>
-            ) : (
-              ''
-            )}
-          </CommentBlock>
-        </CommentContainer>
-      </Container>
-    </Body>
+                </StReplyWrap>
+              </StReplyContainer>
+              {replyWindow ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <div style={{ margin: '8px 0 0' }}>
+                    <FaUserCircle size="36" color="lightgray"></FaUserCircle>
+                  </div>
+                  <StWrapper>
+                    <TextArea
+                      onFocus={() => {
+                        setPostWindow(true);
+                      }}
+                      value={reComment}
+                      onChange={reCommentChangeHandler}
+                      height={height}
+                      onKeyUp={onTextAreaHeightHandler}
+                      placeholder="Add a comment"
+                    ></TextArea>
+
+                    <div
+                      style={{
+                        height: '34px',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        paddingTop: '8px',
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          setReplyWindow(false);
+                        }}
+                        style={{
+                          width: '92px',
+
+                          backgroundColor: 'inherit',
+                          border: 'none',
+                          color: 'rgb(8, 112, 209)',
+                          fontWeight: '600',
+                          fontSize: '16px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Cancle
+                      </button>
+                      <StPostButton post={reComment}>Post</StPostButton>
+                    </div>
+                  </StWrapper>
+                </div>
+              ) : (
+                ''
+              )}
+            </CommentBlock>
+          </CommentContainer>
+        </Container>
+      </Body>
+    </>
   );
 };
 
 export default Photo;
+const StPostButton = styled.button`
+  width: 130px;
+  border-radius: 28px;
+  border: none;
+  background-color: ${(props) => (props.post === '' ? '#B6B9BB' : '#0870D1')};
+  color: white;
+  font-weight: 600px;
+  cursor: pointer;
+`;
 const CommentBlock = styled.div``;
 const StReplyWrap = styled.div`
   width: 100%;
@@ -710,15 +701,16 @@ const CommentContainer = styled.div`
 const Body = styled.div`
   margin: 96px 0px 0px;
   background-color: #f7f8fa;
-  /* width: 100%; */
-  /* height: 100%; */
+  /* width: 100vw; */
+  /* height: 100vh; */
   padding: 0px;
 `;
 const ImgBox = styled.div`
   height: 60vh;
-  position: fixed;
-  /* width: 100vw; */
-  /* height: 90%; */
+  position: relative;
+  /* width: 100%; */
+  /* overflow-x: auto; */
+  /* height: 100%; */
   background-color: #222222;
   padding: 24px 80px;
   display: flex;
