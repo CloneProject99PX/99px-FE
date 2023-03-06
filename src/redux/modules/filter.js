@@ -44,6 +44,8 @@ const initialState = {
     `Other`,
   ],
   checked: [],
+  photographers: false,
+  sortBy: false,
 };
 
 const filterSlice = createSlice({
@@ -53,12 +55,12 @@ const filterSlice = createSlice({
     checkFilter: (state, action) => {
       if (!state.checked.includes(action.payload.value)) {
         return {
-          categories: [...state.categories],
+          ...state,
           checked: [...state.checked.concat(action.payload.value)],
         };
       } else {
         return {
-          categories: [...state.categories],
+          ...state,
           checked: [
             ...state.checked.filter((val) => !(val === action.payload.value)),
           ],
@@ -66,11 +68,22 @@ const filterSlice = createSlice({
       }
     },
     allCategoriesFilter: (state) => {
-      return { categories: [...state.categories], checked: [] };
+      return { ...state, checked: [] };
+    },
+    checkPhotographer: (state) => {
+      return { ...state, photographers: !state.photographers };
+    },
+    checkSortBy: (state) => {
+      return { ...state, sortBy: !state.sortBy };
     },
   },
   extraReducers: {},
 });
 
 export default filterSlice.reducer;
-export const { checkFilter, allCategoriesFilter } = filterSlice.actions;
+export const {
+  checkFilter,
+  allCategoriesFilter,
+  checkPhotographer,
+  checkSortBy,
+} = filterSlice.actions;

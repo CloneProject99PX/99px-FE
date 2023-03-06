@@ -4,8 +4,12 @@ import Wrapper from "../components/common/Wrapper";
 import DropdownCategoriesDiv from "../components/Discover/DropdownCategoriesDiv";
 import Dropdown from "../components/Discover/Dropdown";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { useSelector } from "react-redux";
+import Header from "../components/ui/Header";
 
 const Discover = () => {
+  const checkedCategories = useSelector((state) => state.filter.checked);
+
   const tablistTitle = [
     `What's popular today`,
     `Trending in the community`,
@@ -42,6 +46,7 @@ const Discover = () => {
 
   return (
     <Wrapper>
+      <Header />
       <StDiscoverHeader>{tablistTitle[selectedTablist]}</StDiscoverHeader>
       <StDiscoverDesc>{tablistDesc[selectedTablist]}</StDiscoverDesc>
       <StStickyBar>
@@ -68,6 +73,9 @@ const Discover = () => {
               }}
             >
               Categories
+              {checkedCategories.length === 0
+                ? null
+                : ` (${checkedCategories.length})`}
             </Dropdown>
             {categoriesToggle ? (
               <DropdownCategoriesDiv
@@ -85,71 +93,6 @@ const Discover = () => {
           </StDropdownDiv>
         </StFilterBox>
       </StStickyBar>
-      <>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-      </>
     </Wrapper>
   );
 };
