@@ -14,7 +14,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const initialState = {};
 
 const todosSlice = createSlice({
-  name: "",
+  name: "test",
   initialState,
   reducers: {},
   extraReducers: {},
