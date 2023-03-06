@@ -1,4 +1,8 @@
-import { TbArrowsDiagonal, TbArrowNarrowLeft } from 'react-icons/tb';
+import {
+  TbArrowsDiagonal,
+  TbArrowNarrowLeft,
+  TbArrowsDiagonalMinimize2,
+} from 'react-icons/tb';
 import { RxCaretRight, RxCaretLeft, RxShare1 } from 'react-icons/rx';
 import {
   IoMdHeartEmpty,
@@ -12,8 +16,25 @@ import { SlFire } from 'react-icons/sl';
 import { AiOutlineBarChart } from 'react-icons/ai';
 import { FaUserCircle } from 'react-icons/fa';
 import { useState, useRef } from 'react';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { useNavigate } from 'react-router-dom';
+
+const useFullscreen = () => {
+  const element = useRef();
+  const triggerFull = () => {
+    if (element.current) {
+      element.current.requestFullscreen();
+    }
+  };
+  const exitFull = () => {
+    document.exitFullscreen();
+  };
+  return { element, triggerFull, exitFull };
+};
 
 const Photo = () => {
+  const { element, triggerFull, exitFull } = useFullscreen();
+  const [fullScreen, setFullScreen] = useState(false);
   const [like, setLike] = useState(false);
   const [postWindow, setPostWindow] = useState(false);
   const [replyWindow, setReplyWindow] = useState(false);
@@ -21,6 +42,8 @@ const Photo = () => {
   const [height, setHeight] = useState(0);
   const [follow, setFollow] = useState(false);
   const [followText, setFollowText] = useState('Following');
+
+  const navigate = useNavigate();
   const onTextAreaHeightHandler = (e) => {
     const scHeight = e.target.scrollHeight;
     setHeight(scHeight);
@@ -31,7 +54,7 @@ const Photo = () => {
 
   return (
     <Body>
-      <ImgBox>
+      <ImgBox ref={element}>
         <ImgWrap>
           <div
             style={{
@@ -44,7 +67,13 @@ const Photo = () => {
             }}
           >
             <IconWrap>
-              <TbArrowNarrowLeft size="40" color="white"></TbArrowNarrowLeft>
+              <TbArrowNarrowLeft
+                onClick={() => {
+                  navigate(-1);
+                }}
+                size="40"
+                color="white"
+              ></TbArrowNarrowLeft>
             </IconWrap>
             <BoxButton>
               <RxCaretLeft size="40" color="white"></RxCaretLeft>
@@ -66,8 +95,25 @@ const Photo = () => {
               right: '5%',
             }}
           >
-            <IconWrap direction="right">
-              <TbArrowsDiagonal size="36" color="white"></TbArrowsDiagonal>
+            <IconWrap
+              onClick={() => {
+                setFullScreen(!fullScreen);
+                if (!fullScreen) {
+                  triggerFull();
+                } else {
+                  exitFull();
+                }
+              }}
+              direction="right"
+            >
+              {!fullScreen ? (
+                <TbArrowsDiagonal size="36" color="white"></TbArrowsDiagonal>
+              ) : (
+                <TbArrowsDiagonalMinimize2
+                  size="36"
+                  color="white"
+                ></TbArrowsDiagonalMinimize2>
+              )}
             </IconWrap>
             <BoxButton direction="right">
               <RxCaretRight size="40" color="white"></RxCaretRight>
