@@ -1,6 +1,10 @@
 import { TbArrowsDiagonal, TbArrowNarrowLeft } from 'react-icons/tb';
 import { RxCaretRight, RxCaretLeft, RxShare1 } from 'react-icons/rx';
-import { IoMdHeartEmpty, IoIosInformationCircleOutline } from 'react-icons/io';
+import {
+  IoMdHeartEmpty,
+  IoMdHeart,
+  IoIosInformationCircleOutline,
+} from 'react-icons/io';
 import { BsPlusSquare, BsThreeDots, BsChevronRight } from 'react-icons/bs';
 import styled from 'styled-components';
 import { CiLocationOn } from 'react-icons/ci';
@@ -10,6 +14,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { useState, useRef } from 'react';
 
 const Photo = () => {
+  const [like, setLike] = useState(false);
   const [postWindow, setPostWindow] = useState(false);
   const [replyWindow, setReplyWindow] = useState(false);
   const [comment, setComment] = useState('');
@@ -74,8 +79,16 @@ const Photo = () => {
         {/* 컨텐츠 영역 */}
         <ContentContainer>
           <IconContainer>
-            <IconWrap>
-              <IoMdHeartEmpty size="28"></IoMdHeartEmpty>
+            <IconWrap
+              onClick={() => {
+                setLike(!like);
+              }}
+            >
+              {!like ? (
+                <IoMdHeartEmpty size="28"></IoMdHeartEmpty>
+              ) : (
+                <IoMdHeart color="#B2293B" size="28"></IoMdHeart>
+              )}
             </IconWrap>
             <IconWrap>
               <BsPlusSquare size="22"></BsPlusSquare>
