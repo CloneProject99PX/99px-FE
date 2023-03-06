@@ -2,15 +2,17 @@ import styled from "styled-components";
 import DropdownQuitBox from "../asset/DropdownQuitButton";
 import DropdownCategoriesValue from "./DropdownCategoriesValue";
 import DropdownCheck from "../asset/DropdownCheck.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { allCategoriesFilter } from "../../redux/modules/filter";
 
 const DropdownCategoriesDiv = ({ display, onClick }) => {
   const filter = useSelector((state) => state.filter);
+  const dispatch = useDispatch();
 
   return (
     <StDropdownBox display={display}>
       <StDropdownBoxInnerDiv>
-        <StAllCategoriesDiv>
+        <StAllCategoriesDiv onClick={() => dispatch(allCategoriesFilter())}>
           <StCheckBox checked={filter.checked.length === 0} />
           <StCategoriesLabel>All categories</StCategoriesLabel>
           <StCategoiesClose>

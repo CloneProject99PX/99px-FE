@@ -65,9 +65,12 @@ const filterSlice = createSlice({
         };
       }
     },
+    allCategoriesFilter: (state) => {
+      return { categories: [...state.categories], checked: [] };
+    },
   },
   extraReducers: {},
 });
 
 export default filterSlice.reducer;
-export const { checkFilter } = filterSlice.actions;
+export const { checkFilter, allCategoriesFilter } = filterSlice.actions;
