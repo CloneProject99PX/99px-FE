@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../asset/Logo";
 import Magnifier from "../asset/Magnifier";
@@ -15,10 +16,14 @@ const Header = () => {
   return (
     <StHeaderDiv>
       <StHeaderContentBox>
-        <Logo />
+        <StLinkToHome to="/">
+          <Logo />
+        </StLinkToHome>
         <StNavBarBox>
           {navBarContent.map((val, index) => (
-            <StNavBarContent key={index}>{val}</StNavBarContent>
+            <StNavBarContent key={index} to={"/discover"}>
+              {val}
+            </StNavBarContent>
           ))}
         </StNavBarBox>
       </StHeaderContentBox>
@@ -27,8 +32,8 @@ const Header = () => {
           <Magnifier />
           <StSearch placeholder="Search 99px" />
         </StSearchBox>
-        <StLoginButton>Log in</StLoginButton>
-        <StSignupButton>Sign up</StSignupButton>
+        <StLoginButton to={"/login"}>Log in</StLoginButton>
+        <StSignupButton to={"/signup"}>Sign up</StSignupButton>
       </StHeaderRightBarBox>
     </StHeaderDiv>
   );
@@ -43,9 +48,17 @@ const StHeaderDiv = styled.div`
   background-color: white;
   z-index: 4;
   position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
+`;
+
+const StLinkToHome = styled(Link)`
+  transition: 200ms;
+  &:hover {
+    fill: #1890ff;
+  }
 `;
 
 const StHeaderContentBox = styled.div`
@@ -65,12 +78,13 @@ const StNavBarBox = styled.div`
   align-items: center;
 `;
 
-const StNavBarContent = styled.div`
+const StNavBarContent = styled(Link)`
   margin-left: 2rem;
   color: rgba(0, 0, 0, 0.65);
   font-size: "helveticaneue";
   font-weight: 500;
   transition: color 0.1s ease 0s;
+  text-decoration: none;
   &:hover {
     color: #2986f7;
     cursor: pointer;
@@ -106,7 +120,7 @@ const StSearch = styled.input`
   }
 `;
 
-const StLoginButton = styled.button`
+const StLoginButton = styled(Link)`
   margin-left: 2rem;
   font-family: "helveticaneue";
   font-weight: 700;
@@ -114,13 +128,15 @@ const StLoginButton = styled.button`
   background-color: transparent;
   border: none;
   transition: color 0.1s ease 0s;
+  text-decoration: none;
+  color: black;
   &:hover {
     color: #1890ff;
     cursor: pointer;
   }
 `;
 
-const StSignupButton = styled.button`
+const StSignupButton = styled(Link)`
   margin-left: 1rem;
   font-family: "helveticaneue";
   font-weight: 700;
@@ -128,12 +144,16 @@ const StSignupButton = styled.button`
   background-color: transparent;
   border: none;
   border-radius: 100px;
+  display: flex;
+  align-items: center;
   transition: color 0.1s ease 0s;
   padding: 0px 16px;
   border-color: rgb(34, 34, 34);
   border-width: 2px;
   border-style: solid;
+  text-decoration: none;
   height: 32px;
+  color: black;
   &:hover {
     color: #1890ff;
     cursor: pointer;

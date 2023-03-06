@@ -1,5 +1,12 @@
+import Wrapper from "../components/common/Wrapper";
+import Header from "../components/ui/Header";
+
 const Main = () => {
-  return <div>Main</div>;
+  return (
+    <Wrapper>
+      <Header />
+    </Wrapper>
+  );
 };
 
 export default Main;
