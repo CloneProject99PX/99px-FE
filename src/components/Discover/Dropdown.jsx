@@ -2,17 +2,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import DropdownArrowDown from "../asset/DropdownArrowDown";
 
-const Dropdown = ({ children }) => {
-  const [isToggle, setIsToggle] = useState(false);
-  const toggleHandler = () => {
-    setIsToggle(!isToggle);
-  };
-
+const Dropdown = ({ children, isToggle, onClick }) => {
   return (
     <StFilterDropdown
       isToggle={isToggle}
       onClick={() => {
-        toggleHandler();
+        onClick();
       }}
     >
       {children}

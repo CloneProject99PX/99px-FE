@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
-import DropdownArrowDown from "../components/asset/DropdownArrowDown";
 import Wrapper from "../components/common/Wrapper";
+import DropdownCategoriesDiv from "../components/Discover/DropdownCategoriesDiv";
 import Dropdown from "../components/Discover/Dropdown";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const Discover = () => {
   const tablistTitle = [
@@ -31,37 +32,13 @@ const Discover = () => {
   ];
   const [selectedTablist, setSelectedTablist] = useState(0);
 
-  const Categories = [
-    `Abstract`,
-    `Aerial`,
-    `Animals`,
-    `Black and White`,
-    `Celebrities`,
-    `City & Architecture`,
-    `Commercial`,
-    `Concert`,
-    `Family`,
-    `Fashion`,
-    `Food`,
-    `Fine Art`,
-    `Film`,
-    `Journalism`,
-    `Landscapes`,
-    `Macro`,
-    `Nature`,
-    `Night`,
-    `People`,
-    `Performing Arts`,
-    `Sport`,
-    `Still Life`,
-    `Street`,
-    `Transportation`,
-    `Travel`,
-    `Underwater`,
-    `Urban Exploration`,
-    `Wedding`,
-    `Other`,
-  ];
+  const [categoriesToggle, setCategoriesToggle] = useState(false);
+  const [photographersToggle, setPhotographersToggle] = useState(false);
+  const [sortBy, setSortBy] = useState(false);
+
+  const categoriesRef = useOutsideClick(() => {
+    setCategoriesToggle(false);
+  });
 
   return (
     <Wrapper>
@@ -75,17 +52,37 @@ const Discover = () => {
                 setSelectedTablist(index);
               }}
               selected={tablistName[selectedTablist] === val}
+              key={index}
             >
               <StTablistContent>{val}</StTablistContent>
             </StTablistContentDiv>
           ))}
         </StTablistDiv>
         <StFilterBox>
-          <Dropdown key={"Categories"}>
-            Categories<StDropdownBox>something</StDropdownBox>
-          </Dropdown>
-          <Dropdown key={"Photographers"}>Photographers</Dropdown>
-          <Dropdown key={"Sort"}>Sort by: {`Pulse`}</Dropdown>
+          <StDropdownDiv ref={categoriesRef}>
+            <Dropdown
+              key={"Categories"}
+              isToggle={categoriesToggle}
+              onClick={() => {
+                setCategoriesToggle(!categoriesToggle);
+              }}
+            >
+              Categories
+            </Dropdown>
+            {categoriesToggle ? (
+              <DropdownCategoriesDiv
+                onClick={() => {
+                  setCategoriesToggle(false);
+                }}
+              />
+            ) : null}
+          </StDropdownDiv>
+          <StDropdownDiv>
+            <Dropdown key={"Photographers"}>Photographers</Dropdown>
+          </StDropdownDiv>
+          <StDropdownDiv>
+            <Dropdown key={"Sort"}>Sort by: {`Pulse`}</Dropdown>
+          </StDropdownDiv>
         </StFilterBox>
       </StStickyBar>
       <>
@@ -235,18 +232,6 @@ const StFilterBox = styled.div`
   }
 `;
 
-// --------------
-
-const StDropdownBox = styled.div`
-  display: flex;
-
-  border-radius: 0.25rem;
-  position: absolute;
-  right: -8px;
-  max-height: calc(100vh - 264px);
-  min-height: 24px;
-  max-width: inherit;
-  min-width: inherit;
-  box-shadow: rgb(0 0 0 / 8%) 0px 0px 4px, rgb(0 0 0 / 16%) 0px 4px 12px;
-  top: calc(100% + 14px);
+const StDropdownDiv = styled.div`
+  position: relative;
 `;
