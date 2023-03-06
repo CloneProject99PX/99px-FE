@@ -116,7 +116,7 @@ const Photo = () => {
                     setFollow(!follow);
                   }}
                 >
-                  {follow ? 'Follow' : followText}
+                  {follow ? followText : 'Follow'}
                 </FollowButton>
               </div>
             </div>
@@ -216,8 +216,10 @@ const Photo = () => {
             </div>
           </div>
           <TextWrap>
-            452 people liked this photo
-            <BsChevronRight></BsChevronRight>
+            <TextClick>
+              452 people liked this photo
+              <BsChevronRight></BsChevronRight>
+            </TextClick>
           </TextWrap>
           <div
             style={{
@@ -248,7 +250,11 @@ const Photo = () => {
             <span style={{ fontWeight: '700', marginRight: '24px' }}>
               Category:
             </span>
-            Landscapes<BsChevronRight></BsChevronRight>
+            <span>
+              <TextClick>
+                Landscapes<BsChevronRight></BsChevronRight>
+              </TextClick>
+            </span>
           </TextWrap>
           <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap' }}>
             <CategoryBox>Horizontal</CategoryBox>
@@ -347,7 +353,7 @@ const Photo = () => {
                   }}
                 >
                   <span style={{ fontWeight: '700', marginRight: '24px' }}>
-                    Snezana Petrovic
+                    <TextClick> Snezana Petrovic</TextClick>
                   </span>
                   <span style={{ fontSize: '.7rem' }}>1w</span>
                 </div>
@@ -479,20 +485,15 @@ const StSmallProfilePhoto = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  /* height: 65px; */
 
   margin-right: 8px;
 `;
 const StReplyContainer = styled.div`
-  /* height: 65px; */
   display: flex;
   margin-bottom: 24px;
-
-  /* background-color: red; */
 `;
 
 const StWrapper = styled.div`
-  /* position: 'realative'; */
   width: 86%;
   margin-left: 8px;
 `;
@@ -530,6 +531,19 @@ const CategoryBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  &:hover {
+    border-color: #2a86f7;
+    color: #2a86f7;
+  }
+`;
+const TextClick = styled.span`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: #2a86f7;
+  }
 `;
 
 const TextWrap = styled.div`
@@ -540,11 +554,11 @@ const TextWrap = styled.div`
   align-items: center;
 `;
 const FollowButton = styled.span`
-  color: ${(props) => (props.textcolor ? '#2a86f7' : '#757575')};
-  /* #757575 */
+  color: ${(props) => (props.textcolor ? '#757575' : '#2a86f7')};
   cursor: pointer;
   &:hover {
     color: #2a86f7;
+    opacity: ${(props) => props.textcolor || 0.8};
   }
 `;
 const BigString = styled.h3`
@@ -573,16 +587,17 @@ const IconWrap = styled.div`
   height: 40px;
   border-radius: 50%;
   display: flex;
+  background-color: inherit;
   justify-content: center;
   align-items: center;
   position: ${(props) => props.direction === 'right' && 'absolute'};
   right: ${(props) => props.direction === 'right' && '0px'};
   cursor: pointer;
   &:hover {
-    background-color: #4e4e4e;
+    opacity: 0.4;
   }
 `;
-// #E8E8E8
+
 const BoxButton = styled.div`
   width: 100%;
   height: 77%;
