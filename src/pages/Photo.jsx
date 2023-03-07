@@ -532,7 +532,7 @@ const TextArea = styled.textarea`
   outline: none;
   box-sizing: border-box;
   border-color: #d7d8db;
-
+  font-family: inherit;
   width: 100%;
 
   resize: none;
