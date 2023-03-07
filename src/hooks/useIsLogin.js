@@ -13,7 +13,7 @@ const useIsLogin = (login) => {
     }
   }, []);
 
-  return [isLogin];
+  return isLogin;
 };
 
 export default useIsLogin;

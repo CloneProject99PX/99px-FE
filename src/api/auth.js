@@ -1,8 +1,15 @@
-import axios from "axios";
+import instance from "./instance/instance";
 
-const temp = async () => {
-  const response = axios.get("/");
+const signUp = async ({ email, password }) => {
+  const response = instance.post("/api/auth/signup", { email, password });
+  console.log(response);
   return response;
 };
 
-export { temp };
+const logIn = async ({ email, password }) => {
+  const response = instance.post("/api/login", { email, password });
+  console.log(response);
+  return response;
+};
+
+export { signUp, logIn };

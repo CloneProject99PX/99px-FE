@@ -1,11 +1,11 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Discover from '../pages/Discover';
-import Login from '../pages/Login';
-import Main from '../pages/Main';
-import Onboarding from '../pages/Onboarding';
-import Photo from '../pages/Photo';
-import Signup from '../pages/Signup';
-import Upload from '../pages/Upload';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Discover from "../pages/Discover";
+import Login from "../pages/Login";
+import Main from "../pages/Main";
+import Onboarding from "../pages/Onboarding";
+import Photo from "../pages/Photo";
+import Signup from "../pages/Signup";
+import Upload from "../pages/Upload";
 
 const Router = () => {
   return (

@@ -1,11 +1,38 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { signUp } from "../api/auth";
 import Wrapper from "../components/common/Wrapper";
 import Header from "../components/ui/Header";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Signup = () => {
   const [withEmail, setWithEmail] = useState(false);
+  const [emailValue, setEmailValue] = useState("");
+  const [pwValue, setPwValue] = useState("");
+
+  const navigate = useNavigate();
+
+  const isLogin = useIsLogin();
+
+  useEffect(() => {
+    if (isLogin === true) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  const signUpButtonHandler = () => {
+    signUp({ email: emailValue, password: pwValue })
+      .then(() => {
+        alert("Sign up complete");
+        navigate("/login");
+      })
+      .catch((error) => {
+        if (error.response.status === 400) {
+          alert("Email is already used.");
+        }
+      });
+  };
 
   return (
     <Wrapper>
@@ -32,13 +59,27 @@ const Signup = () => {
             <StSignupHeader>Sign up to 99px</StSignupHeader>
             <StInputDiv>
               <StInputTitle>Email</StInputTitle>
-              <StInput />
+              <StInput
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
+              />
             </StInputDiv>
             <StInputDiv>
               <StInputTitle>Password*</StInputTitle>
-              <StInput placeholder="(minimum 8 characters)" />
+              <StInput
+                placeholder="(minimum 8 characters)"
+                type="password"
+                value={pwValue}
+                onChange={(e) => setPwValue(e.target.value)}
+              />
             </StInputDiv>
-            <StSignupButton>Sign up</StSignupButton>
+            <StSignupButton
+              onClick={() => {
+                signUpButtonHandler();
+              }}
+            >
+              Sign up
+            </StSignupButton>
             <StLoginLink>
               Already have an account? <StLink to={"/login"}>Log in</StLink>
             </StLoginLink>

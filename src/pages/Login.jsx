@@ -1,9 +1,36 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { logIn } from "../api/auth";
 import Wrapper from "../components/common/Wrapper";
 import Header from "../components/ui/Header";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Login = () => {
+  const [emailValue, setEmailValue] = useState("");
+  const [pwValue, setPwValue] = useState("");
+  const navigate = useNavigate();
+
+  const isLogin = useIsLogin();
+
+  const [cookie, setCookie, delCookie] = useCookies(["authorization"]);
+
+  useEffect(() => {
+    if (isLogin === true) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  const logInButtonHandler = () => {
+    logIn({ email: emailValue, password: pwValue })
+      .then((res) => {
+        setCookie("authorization", res.headers.authorization);
+        navigate("/");
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -12,13 +39,26 @@ const Login = () => {
           <StLoginHeader>Log in to 500px</StLoginHeader>
           <StInputDiv>
             <StInputTitle>Email or Username*</StInputTitle>
-            <StInput />
+            <StInput
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
+            />
           </StInputDiv>
           <StInputDiv>
             <StInputTitle>Password*</StInputTitle>
-            <StInput />
+            <StInput
+              type="password"
+              value={pwValue}
+              onChange={(e) => setPwValue(e.target.value)}
+            />
           </StInputDiv>
-          <StLoginButton>Log in</StLoginButton>
+          <StLoginButton
+            onClick={() => {
+              logInButtonHandler();
+            }}
+          >
+            Log in
+          </StLoginButton>
           <StKakaoButton>Log in with Kakao</StKakaoButton>
           <StLoginLink>
             Don't have an account? <StLink to={"/signup"}>Sign up</StLink>

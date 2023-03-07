@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import useIsLogin from "../../hooks/useIsLogin";
 import Logo from "../asset/Logo";
 import Magnifier from "../asset/Magnifier";
+import UpArrow from "../asset/UpArrow";
 
 const Header = () => {
   const navBarContent = [
@@ -12,6 +14,8 @@ const Header = () => {
     "Quests",
     "Blog",
   ];
+
+  const isLogin = useIsLogin();
 
   return (
     <StHeaderDiv>
@@ -32,8 +36,16 @@ const Header = () => {
           <Magnifier />
           <StSearch placeholder="Search 99px" />
         </StSearchBox>
-        <StLoginButton to={"/login"}>Log in</StLoginButton>
-        <StSignupButton to={"/signup"}>Sign up</StSignupButton>
+        {isLogin ? null : <StLoginButton to={"/login"}>Log in</StLoginButton>}
+        {isLogin ? null : (
+          <StSignupButton to={"/signup"}>Sign up</StSignupButton>
+        )}
+        {isLogin ? (
+          <StUploadButton to={"/upload"}>
+            <UpArrow />
+            Upload
+          </StUploadButton>
+        ) : null}
       </StHeaderRightBarBox>
     </StHeaderDiv>
   );
@@ -154,6 +166,32 @@ const StSignupButton = styled(Link)`
   text-decoration: none;
   height: 32px;
   color: black;
+  &:hover {
+    color: #1890ff;
+    cursor: pointer;
+  }
+`;
+
+const StUploadButton = styled(Link)`
+  margin-left: 1rem;
+  font-family: "helveticaneue";
+  font-weight: 700;
+  font-size: 1rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 22px 10px 14px;
+  display: flex;
+  align-items: center;
+  transition: color 0.1s ease 0s;
+  border-color: rgb(34, 34, 34);
+  border-width: 2px;
+  border-style: solid;
+  text-decoration: none;
+  height: 32px;
+  color: black;
+  gap: 0.25rem;
+  max-height: 24px;
   &:hover {
     color: #1890ff;
     cursor: pointer;
