@@ -1,7 +1,7 @@
-import "./App.css";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { CookiesProvider } from "react-cookie";
-import Router from "./shared/Router";
+import './App.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { CookiesProvider } from 'react-cookie';
+import Router from './shared/Router';
 
 const queryClient = new QueryClient();
 
