@@ -34,6 +34,7 @@ const StFilterDropdown = styled.div`
   transition: all 0.2s ease 0s;
   color: #525558;
   gap: 0.5rem;
+  background-color: white;
   position: relative;
   &:hover {
     border: 2px solid #316eca;

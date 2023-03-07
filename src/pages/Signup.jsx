@@ -29,7 +29,7 @@ const Signup = () => {
           </StSignupBox>
         ) : (
           <StSignupBox>
-            <StSignupHeader>Sign up to 500px</StSignupHeader>
+            <StSignupHeader>Sign up to 99px</StSignupHeader>
             <StInputDiv>
               <StInputTitle>Email</StInputTitle>
               <StInput />
