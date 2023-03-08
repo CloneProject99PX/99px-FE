@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { Cookies } from "react-cookie";
+import { useEffect, useState } from 'react';
+import { Cookies } from 'react-cookie';
 
 const useIsLogin = (login) => {
   const [isLogin, setIsLogin] = useState(login);
   const cookies = new Cookies();
 
   useEffect(() => {
-    if (cookies.get("authorization")) {
+    if (cookies.get('authorization')) {
       setIsLogin(true);
     } else {
       setIsLogin(false);
     }
   }, []);
 
-  return [isLogin];
+  return isLogin;
 };
 
 export default useIsLogin;

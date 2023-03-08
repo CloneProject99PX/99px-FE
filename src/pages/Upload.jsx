@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRef, useCallback } from 'react';
 import {
   AiOutlineArrowUp,
@@ -11,23 +11,255 @@ import { IoIosPeople, IoIosInformationCircleOutline } from 'react-icons/io';
 import { CiTrash } from 'react-icons/ci';
 import styled from 'styled-components';
 import useToggle from '../hooks/useToggle';
+import useDebounce from '../hooks/useDebounce';
 
 export default function Upload() {
+  const [locationInputVal, setLocationInputVal] = useState('');
+  const fetchValue = useDebounce(locationInputVal);
+  const onChangeLocationInputValHandler = (e) => {
+    setLocationInputVal(e.target.value);
+  };
   const [isUpload, setIsUpload] = useToggle();
   const inputRef = useRef();
+  const [location] = useState([
+    'SEOUL',
+    'BUSAN',
+    'INCHON',
+    'DAEGU',
+    'DAEJEON',
+    'KWANGJU',
+    'SUWON',
+    'ULSAN',
+    'GOYANG',
+    'YONGIN',
+    'CHANGWON',
+    'SEONGNAM',
+    'CHEONG_JU',
+    'BUCHON',
+    'HWASEONG',
+    'NAMYANGJU',
+    'JEONJU',
+    'CHEONAN',
+    'ANSAN',
+    'ANYANG',
+    'KIMHAE',
+    'PYEONGTAEK',
+    'POHANG',
+    'JEJU',
+    'SIHEUNG',
+    'PAJU',
+    'UIJEONGBU',
+    'GIMPO',
+    'GUMI',
+    'GWANGJU',
+    'YANGSAN',
+    'WONJU',
+    'JINJU',
+    'SEJONG',
+    'KWANGMYUNG',
+    'ASAN',
+    'IKSAN',
+    'CHUNCHEON',
+    'KYUNGSAN',
+    'GUNPO',
+    'GUNSAN',
+    'HANAM',
+    'YEOSU',
+    'SUNCHEON',
+    'KYUNGJU',
+    'GEOJE',
+    'MOKPO',
+    'OSAN',
+    'ICHEON',
+    'GANGNEUNG',
+    'YANGJU',
+    'CHUNGJU',
+    'ANSEONG',
+    'GURI',
+    'SEOSAN',
+    'SEOGWIPO',
+    'DANGJIN',
+    'ANDONG',
+    'POCHEON',
+    'UIWANG',
+    'GWANGYANG',
+    'GIMCHEON',
+    'JECHEON',
+    'TONGYEONG',
+    'NONSAN',
+    'CHILGOK',
+    'SACHEON',
+    'YEOJU',
+    'GONGJU',
+    'YANGPYEONG',
+    'JEONGEUP',
+    'YEONGJU',
+    'NAJU',
+    'EUMSEONG',
+    'MILYANG',
+    'HONGSEONG',
+    'BORYEONG',
+    'WANJU',
+    'SANGJU',
+    'YEONGCHEON',
+    'DONGDUCHEON',
+    'DONGHAE',
+    'GIMJE',
+    'MUAN',
+    'NAMWON',
+    'JINCHEON',
+    'YESAN',
+    'SOKCHO',
+    'MUNGYEONG',
+    'HAMAN',
+    'SAMCHEOK',
+    'HONGCHEON',
+    'HAENAM',
+    'BUYEO',
+    'CHANGNYEONG',
+    'TAEAN',
+    'GOHEUNG',
+    'HWASUN',
+    'GEOCHANG',
+    'GAPYEONG',
+    'YEONGAM',
+    'GEUMSAN',
+    'GOCHANG',
+    'GWACHEON',
+    'SEOCHEON',
+    'GOSEONG',
+    'BUAN',
+    'UISEONG',
+    'OKCHEON',
+    'YEONGGWANG',
+    'YEONGDONG',
+    'ULJIN',
+    'WANDO',
+    'YECHON',
+    'CHEOLWON',
+    'TAEBAEK',
+    'YEONCHON',
+    'DAMYANG',
+    'HAPCHEON',
+    'HADONG',
+    'HOENGSEONG',
+    'NAMHAE',
+    'KYERYONG',
+    'JANGSEONG',
+    'CHEONGDO',
+    'SEONGJU',
+    'PYEONGCHANG',
+    'BOSEONG',
+    'GOESAN',
+    'HAMYANG',
+    'JEONGPYEONG',
+    'YEONGWOL',
+    'JANGHEUNG',
+    'YEONGDEOK',
+    'JEONGSEON',
+    'SHINAN',
+    'SANCHEONG',
+    'GANGJIN',
+    'GORYUNG',
+    'BOEUN',
+    'CHEONGYANG',
+    'BONGHWA',
+    'HAMPYEONG',
+    'INJE',
+    'JINDO',
+    'GOKSEONG',
+    'GOSEUNG',
+    'DANYANG',
+    'SUNCHANG',
+    'IMSIL',
+    'UIRYUNG',
+    'YANGYANG',
+    'HWACHEON',
+    'CHEONGSONG',
+    'GURYE',
+    'MUSU',
+    'JINAN',
+    'YANGGU',
+    'GUNWI',
+    'JANGSU',
+    'YEONGYANG',
+    'ULLEUNG',
+  ]);
+  const [category, setCategory] = useState([
+    'Abstract',
+    'Aerial',
+    'Animals',
+    'Black_and_White',
+    'Celebrities',
+    'City_and_Architecture',
+    'Commercial',
+    'Concert',
+    'Family',
+    'Fashion',
+    'Food',
+    'FindArt',
+    'Film',
+    'Journalism',
+    'Landscapes',
+    'Macro',
+    'Nature',
+    'Night',
+    'People',
+    'Performing_Arts',
+    'Sport',
+    'Still_Life',
+    'Street',
+    'Transportation',
+    'Travel',
+    'Underwater',
+    'Urban_Exploration',
+    'Wedding',
+    'Other',
+  ]);
+
+  const [data, setData] = useState({
+    title: '',
+    description: '',
+    lacation: '',
+    category: '',
+    nsfw: false,
+  });
+
+  // 입력값에 따라 도시 배열 새로 리턴해주는곳
+
+  const foundLocation = location.filter((item) => {
+    const inputVal = fetchValue.toUpperCase();
+    if (!inputVal) {
+      return;
+    }
+
+    return item.includes(inputVal);
+  });
+
   const onUploadImage = useCallback((e) => {
     if (!e.target.files) {
       return;
     }
     console.log(e.target.files[0]?.name);
+
     setIsUpload();
   }, []);
+
   const onUploadImageButtonClick = useCallback(() => {
     if (!inputRef.current) {
       return;
     }
     inputRef.current.click();
   }, []);
+
+  const changeTitleHandler = (e) => {
+    setData({ ...data, title: e.target.value });
+  };
+  const changeDescHandler = (e) => {
+    setData({ ...data, description: e.target.value });
+  };
+
+  console.log(data);
   return (
     <>
       <input
@@ -187,7 +419,11 @@ export default function Upload() {
                 </Button>
               </div>
             </ButtonBox>
+            {foundLocation.map((item, i) => {
+              return <div key={i}>{item}</div>;
+            })}
           </StBox>
+
           <div
             style={{
               width: '360px',
@@ -241,29 +477,7 @@ export default function Upload() {
             >
               * is required
             </div>
-            <StBlock>
-              <div
-                style={{
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  marginBottom: '4px',
-                }}
-              >
-                Photo privacy
-              </div>
-              <div
-                style={{
-                  border: '1px solid #D7D8DB',
-                  borderRadius: '4px',
 
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  padding: '12px 16px',
-                }}
-              >
-                Public
-              </div>
-            </StBlock>
             <StBlock>
               <div
                 style={{
@@ -277,6 +491,8 @@ export default function Upload() {
 
               <StInput>
                 <input
+                  value={data.title || ''}
+                  onChange={changeTitleHandler}
                   style={{
                     border: 'none',
                     backgroundColor: 'inherit',
@@ -300,8 +516,10 @@ export default function Upload() {
                 Description
               </div>
 
-              <StInput placeholder="title">
+              <StInput>
                 <textarea
+                  value={data.description || ''}
+                  onChange={changeDescHandler}
                   style={{
                     resize: 'none',
                     border: 'none',
@@ -310,6 +528,7 @@ export default function Upload() {
                     height: '50px',
                     outline: 'none',
                     fontFamily: 'inherit',
+                    fontSize: '1rem',
                   }}
                   placeholder="e.g. Low angle vier of young African man surfing in the ocean with a clear blue sky"
                 ></textarea>
@@ -328,6 +547,8 @@ export default function Upload() {
 
               <StInput>
                 <input
+                  value={locationInputVal}
+                  onChange={onChangeLocationInputValHandler}
                   style={{
                     border: 'none',
                     backgroundColor: 'inherit',

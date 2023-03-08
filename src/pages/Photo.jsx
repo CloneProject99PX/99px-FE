@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import useInput from '../hooks/useInput';
 import useFullscreen from '../hooks/useFullscreen';
 import useToggle from '../hooks/useToggle';
+import axios from 'axios';
 
 const Photo = () => {
   const { element, triggerFull, exitFull } = useFullscreen();
