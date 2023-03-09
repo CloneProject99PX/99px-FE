@@ -9,6 +9,7 @@ import Header from "../components/ui/Header";
 import DropdownPhotographersDiv from "../components/Discover/DropdownPhotographersDiv";
 import DropdownSortDiv from "../components/Discover/DropdownSortDiv";
 import { loadImage } from "../api/loadImage";
+import { useNavigate } from "react-router-dom";
 
 const Discover = () => {
   const checkedCategories = useSelector((state) => state.filter.checked);
@@ -44,11 +45,30 @@ const Discover = () => {
   const [sortBy, setSortBy] = useState(false);
   const [imageList, setImageList] = useState([]);
 
+  const [counter, setCounter] = useState(1);
+
+  const infLoadMore = () => {
+    loadImage(counter, 2).then((res) => {
+      setImageList((prev) => [...prev].concat([...res.data.data.content]));
+    });
+  };
+
+  const infScrollRef = useRef(null);
+  const navigate = useNavigate();
+
+  const io = new IntersectionObserver(() => {
+    setCounter((prev) => prev + 1);
+  });
+
   useEffect(() => {
-    loadImage(0, 10).then((res) => {
-      console.log(res.data.data.content);
+    infLoadMore();
+  }, [counter]);
+
+  useEffect(() => {
+    loadImage(0, 5).then((res) => {
       setImageList(res.data.data.content);
     });
+    io.observe(infScrollRef.current);
   }, []);
 
   const categoriesRef = useOutsideClick(() => {
@@ -132,9 +152,14 @@ const Discover = () => {
       </StStickyBar>
       <StImageList>
         <StAllImageeDiv>
-          {imageList?.map((val) => {
+          {imageList?.map((val, index) => {
             return (
-              <StImageBox key={val.id}>
+              <StImageBox
+                key={index}
+                onClick={() => {
+                  navigate(`/photo/${val.id}`);
+                }}
+              >
                 <StImage src={val.url} />
                 <StInfoBox />
               </StImageBox>
@@ -142,6 +167,7 @@ const Discover = () => {
           })}
         </StAllImageeDiv>
       </StImageList>
+      <div ref={infScrollRef}>test</div>
     </Wrapper>
   );
 };
@@ -176,6 +202,7 @@ const StStickyBar = styled.div`
   position: sticky;
   align-items: center;
   top: 4.5rem;
+  z-index: 5;
 
   padding: 0 4rem;
 `;
@@ -230,8 +257,7 @@ const StDropdownDiv = styled.div`
 
 const StImageList = styled.div`
   background-color: rgb(247, 248, 250);
-  min-height: 2000px;
-  z-index: -5;
+  z-index: 0;
 `;
 
 const StAllImageeDiv = styled.div`
@@ -264,6 +290,7 @@ const StInfoBox = styled.div`
   top: 0;
   transition: 200ms;
   &:hover {
+    cursor: pointer;
     background: linear-gradient(rgba(0, 0, 0, 0), 90%, rgba(0, 0, 0, 0.15));
   }
 `;

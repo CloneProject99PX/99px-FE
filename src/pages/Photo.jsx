@@ -2,28 +2,28 @@ import {
   TbArrowsDiagonal,
   TbArrowNarrowLeft,
   TbArrowsDiagonalMinimize2,
-} from 'react-icons/tb';
-import { RxCaretRight, RxCaretLeft, RxShare1 } from 'react-icons/rx';
+} from "react-icons/tb";
+import { RxCaretRight, RxCaretLeft, RxShare1 } from "react-icons/rx";
 import {
   IoMdHeartEmpty,
   IoMdHeart,
   IoIosInformationCircleOutline,
-} from 'react-icons/io';
-import { BsPlusSquare, BsThreeDots, BsChevronRight } from 'react-icons/bs';
-import styled from 'styled-components';
-import { CiLocationOn } from 'react-icons/ci';
-import { SlFire } from 'react-icons/sl';
-import { AiOutlineBarChart } from 'react-icons/ai';
-import { FaUserCircle } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+} from "react-icons/io";
+import { BsPlusSquare, BsThreeDots, BsChevronRight } from "react-icons/bs";
+import styled from "styled-components";
+import { CiLocationOn } from "react-icons/ci";
+import { SlFire } from "react-icons/sl";
+import { AiOutlineBarChart } from "react-icons/ai";
+import { FaUserCircle } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
-import { useNavigate, useParams } from 'react-router-dom';
-import useInput from '../hooks/useInput';
-import useFullscreen from '../hooks/useFullscreen';
-import useToggle from '../hooks/useToggle';
-import axios from 'axios';
-import { getInfo } from '../api/getinfo';
-import { useQuery } from 'react-query';
+import { useNavigate, useParams } from "react-router-dom";
+import useInput from "../hooks/useInput";
+import useFullscreen from "../hooks/useFullscreen";
+import useToggle from "../hooks/useToggle";
+import { getInfo } from "../api/getinfo";
+import Header from "../components/ui/Header";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Photo = () => {
   const { element, triggerFull, exitFull } = useFullscreen();
@@ -31,7 +31,7 @@ const Photo = () => {
   const [replyWindow, setReplyWindow] = useState(false);
   const [height, setHeight] = useState(0);
   const [isLike, isLikeChangeHandler] = useToggle();
-  const [followText, setFollowText] = useState('Following');
+  const [followText, setFollowText] = useState("Following");
   const [isFollow, isFollowChangeHandler] = useToggle();
   const [comment, commentChangeHandler] = useInput();
   const [reComment, reCommentChangeHandler] = useInput();
@@ -41,6 +41,8 @@ const Photo = () => {
     const scHeight = e.target.scrollHeight;
     setHeight(scHeight);
   };
+
+  const isLogin = useIsLogin();
   const [info, setInfo] = useState();
   const params = useParams();
 
@@ -50,16 +52,17 @@ const Photo = () => {
 
   return (
     <Body>
+      <Header />
       <ImgBox ref={element}>
         <ImgWrap>
           <div
             style={{
-              zIndex: '1',
-              position: 'absolute',
-              width: '25vw',
-              height: '90%',
+              zIndex: "1",
+              position: "absolute",
+              width: "25vw",
+              height: "90%",
 
-              left: '5%',
+              left: "5%",
             }}
           >
             <IconWrap>
@@ -78,20 +81,20 @@ const Photo = () => {
 
           <img
             style={{
-              position: 'static',
+              position: "static",
 
-              width: 'auto',
+              width: "auto",
             }}
             src={info?.url}
           ></img>
           <div
             style={{
-              zIndex: '1',
-              position: 'absolute',
-              width: '25vw',
-              height: '90%',
+              zIndex: "1",
+              position: "absolute",
+              width: "25vw",
+              height: "90%",
 
-              right: '5%',
+              right: "5%",
             }}
           >
             <IconWrap
@@ -146,52 +149,52 @@ const Photo = () => {
             <ProFileImg src="https://drscdn.500px.org/user_avatar/1544417/q%3D85_w%3D100_h%3D100/v2?webp=true&v=7&sig=f89f718fcec7996e21e632dcbdd9ecff1d7202ad8c978e12ba7f166bb73555d8"></ProFileImg>
             <div
               style={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: '8px',
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginLeft: "8px",
               }}
             >
               <BigString>{info?.title}</BigString>
               <div>
-                <span style={{ cursor: 'pointer' }}>
-                  by {info?.memberResponseDto.email.split('@')[0]}
+                <span style={{ cursor: "pointer" }}>
+                  by {info?.memberResponseDto.email.split("@")[0]}
                   <span>•</span>
                 </span>
 
                 <FollowButton
                   textcolor={isFollow}
                   onMouseOver={() => {
-                    setFollowText('Unfollow');
+                    setFollowText("Unfollow");
                   }}
                   onMouseOut={() => {
-                    setFollowText('Following');
+                    setFollowText("Following");
                   }}
                   onClick={isFollowChangeHandler}
                 >
-                  {isFollow ? followText : 'Follow'}
+                  {isFollow ? followText : "Follow"}
                 </FollowButton>
               </div>
             </div>
           </ProFileBox>
           <div
             style={{
-              width: '100%',
-              height: '29px',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
+              width: "100%",
+              height: "29px",
+              marginBottom: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
             }}
           >
             <CiLocationOn size="24"></CiLocationOn>
             <p>
-              <span style={{ borderBottom: '1px dashed' }}>
+              <span style={{ borderBottom: "1px dashed" }}>
                 {info?.location}
               </span>
-              <span style={{ fontWeight: '700', marginLeft: '24px' }}>
-                Uploaded{' '}
+              <span style={{ fontWeight: "700", marginLeft: "24px" }}>
+                Uploaded{" "}
               </span>
               7 days ago
             </p>
@@ -199,26 +202,26 @@ const Photo = () => {
           <TextWrap>{info?.description}</TextWrap>
           <div
             style={{
-              minHeight: '60px',
-              display: 'flex',
-              marginBottom: '16px',
-              flexWrap: 'wrap',
+              minHeight: "60px",
+              display: "flex",
+              marginBottom: "16px",
+              flexWrap: "wrap",
             }}
           >
             <div
               style={{
                 // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
+                margin: "0 32px 8px 0",
+                display: "flex",
 
-                flexDirection: 'column',
+                flexDirection: "column",
               }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
+                  display: "flex",
+                  marginBottom: "8px",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Highest Pulse
@@ -229,17 +232,17 @@ const Photo = () => {
             <div
               style={{
                 // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
+                margin: "0 32px 8px 0",
+                display: "flex",
 
-                flexDirection: 'column',
+                flexDirection: "column",
               }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
+                  display: "flex",
+                  marginBottom: "8px",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Impressions
@@ -250,17 +253,17 @@ const Photo = () => {
             <div
               style={{
                 // height: '100%',
-                margin: '0 32px 8px 0',
-                display: 'flex',
+                margin: "0 32px 8px 0",
+                display: "flex",
 
-                flexDirection: 'column',
+                flexDirection: "column",
               }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  marginBottom: '8px',
-                  whiteSpace: 'nowrap',
+                  display: "flex",
+                  marginBottom: "8px",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Popular
@@ -279,13 +282,13 @@ const Photo = () => {
           </TextWrap>
           <div
             style={{
-              padding: '16px',
-              marginBottom: '24px',
-              border: '1px solid #D7D8DB',
-              borderLeft: '4px solid #2A86F7 ',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
+              padding: "16px",
+              marginBottom: "24px",
+              border: "1px solid #D7D8DB",
+              borderLeft: "4px solid #2A86F7 ",
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
             }}
           >
             <AiOutlineBarChart size="60px"></AiOutlineBarChart>
@@ -293,9 +296,9 @@ const Photo = () => {
               Learn how people are engaging with your photos.
               <span
                 style={{
-                  color: '#2A86F7',
-                  fontWeight: '700',
-                  marginLeft: '8px',
+                  color: "#2A86F7",
+                  fontWeight: "700",
+                  marginLeft: "8px",
                 }}
               >
                 View Statistics
@@ -303,7 +306,7 @@ const Photo = () => {
             </div>
           </div>
           <TextWrap>
-            <span style={{ fontWeight: '700', marginRight: '24px' }}>
+            <span style={{ fontWeight: "700", marginRight: "24px" }}>
               Category:
             </span>
             <span>
@@ -313,7 +316,7 @@ const Photo = () => {
               </TextClick>
             </span>
           </TextWrap>
-          <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap' }}>
+          <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap" }}>
             <CategoryBox>Horizontal</CategoryBox>
             <CategoryBox>No People</CategoryBox>
             <CategoryBox>Snow</CategoryBox>
@@ -328,59 +331,63 @@ const Photo = () => {
         <CommentContainer>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              marginBottom: '16px',
+              display: "flex",
+              alignItems: "flex-start",
+              marginBottom: "16px",
             }}
           >
-            <div style={{ margin: '8px 0 0' }}>
-              <FaUserCircle size="36" color="lightgray"></FaUserCircle>
-            </div>
-            <StWrapper>
-              <TextArea
-                onFocus={() => {
-                  setPostWindow(true);
-                }}
-                value={comment}
-                onChange={commentChangeHandler}
-                height={height}
-                onKeyUp={onTextAreaHeightHandler}
-                placeholder="Add a comment"
-              ></TextArea>
-              {postWindow === true && (
-                <div
-                  style={{
-                    height: '34px',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    paddingTop: '8px',
+            {isLogin && (
+              <div style={{ margin: "8px 0 0" }}>
+                <FaUserCircle size="36" color="lightgray"></FaUserCircle>
+              </div>
+            )}
+            {isLogin && (
+              <StWrapper>
+                <TextArea
+                  onFocus={() => {
+                    setPostWindow(true);
                   }}
-                >
-                  <button
-                    onClick={() => {
-                      setPostWindow(false);
-                    }}
+                  value={comment}
+                  onChange={commentChangeHandler}
+                  height={height}
+                  onKeyUp={onTextAreaHeightHandler}
+                  placeholder="Add a comment"
+                ></TextArea>
+                {postWindow === true && (
+                  <div
                     style={{
-                      width: '92px',
-
-                      backgroundColor: 'inherit',
-                      border: 'none',
-                      color: 'rgb(8, 112, 209)',
-                      fontWeight: '600',
-                      fontSize: '16px',
-                      cursor: 'pointer',
+                      height: "34px",
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      paddingTop: "8px",
                     }}
                   >
-                    Cancel
-                  </button>
-                  <StPostButton post={comment}>Post</StPostButton>
-                </div>
-              )}
-            </StWrapper>
+                    <button
+                      onClick={() => {
+                        setPostWindow(false);
+                      }}
+                      style={{
+                        width: "92px",
+
+                        backgroundColor: "inherit",
+                        border: "none",
+                        color: "rgb(8, 112, 209)",
+                        fontWeight: "600",
+                        fontSize: "16px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <StPostButton post={comment}>Post</StPostButton>
+                  </div>
+                )}
+              </StWrapper>
+            )}
           </div>
           <TextWrap>
-            <span style={{ fontWeight: '700', marginRight: '24px' }}>
+            <span style={{ fontWeight: "700", marginRight: "24px" }}>
               8 Comments
             </span>
           </TextWrap>
@@ -390,42 +397,42 @@ const Photo = () => {
               <StReplyWrap>
                 <div
                   style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <span style={{ fontWeight: '700', marginRight: '24px' }}>
+                  <span style={{ fontWeight: "700", marginRight: "24px" }}>
                     <TextClick> Snezana Petrovic</TextClick>
                   </span>
-                  <span style={{ fontSize: '.7rem' }}>1w</span>
+                  <span style={{ fontSize: ".7rem" }}>1w</span>
                 </div>
                 <div
                   style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
                   Fantastic
                   <span>
                     <BsThreeDots
                       size="12"
-                      style={{ marginRight: '8px' }}
+                      style={{ marginRight: "8px" }}
                     ></BsThreeDots>
                   </span>
                 </div>
                 <div
                   style={{
-                    marginTop: '4px',
-                    height: '21px',
+                    marginTop: "4px",
+                    height: "21px",
 
-                    paddingLeft: '4px',
+                    paddingLeft: "4px",
 
-                    display: 'flex',
-                    alignItems: 'center',
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   <span
@@ -433,9 +440,9 @@ const Photo = () => {
                       setReplyWindow(!replyWindow);
                     }}
                     style={{
-                      color: '#2A86F7',
-                      fontSize: '.9rem',
-                      cursor: 'pointer',
+                      color: "#2A86F7",
+                      fontSize: ".9rem",
+                      cursor: "pointer",
                     }}
                   >
                     Reply
@@ -446,12 +453,12 @@ const Photo = () => {
             {replyWindow ? (
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  marginBottom: '16px',
+                  display: "flex",
+                  alignItems: "flex-start",
+                  marginBottom: "16px",
                 }}
               >
-                <div style={{ margin: '8px 0 0' }}>
+                <div style={{ margin: "8px 0 0" }}>
                   <FaUserCircle size="36" color="lightgray"></FaUserCircle>
                 </div>
                 <StWrapper>
@@ -468,11 +475,11 @@ const Photo = () => {
 
                   <div
                     style={{
-                      height: '34px',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      paddingTop: '8px',
+                      height: "34px",
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      paddingTop: "8px",
                     }}
                   >
                     <button
@@ -480,14 +487,14 @@ const Photo = () => {
                         setReplyWindow(false);
                       }}
                       style={{
-                        width: '92px',
+                        width: "92px",
 
-                        backgroundColor: 'inherit',
-                        border: 'none',
-                        color: 'rgb(8, 112, 209)',
-                        fontWeight: '600',
-                        fontSize: '16px',
-                        cursor: 'pointer',
+                        backgroundColor: "inherit",
+                        border: "none",
+                        color: "rgb(8, 112, 209)",
+                        fontWeight: "600",
+                        fontSize: "16px",
+                        cursor: "pointer",
                       }}
                     >
                       Cancle
@@ -497,7 +504,7 @@ const Photo = () => {
                 </StWrapper>
               </div>
             ) : (
-              ''
+              ""
             )}
           </CommentBlock>
         </CommentContainer>
@@ -511,7 +518,7 @@ const StPostButton = styled.button`
   width: 130px;
   border-radius: 28px;
   border: none;
-  background-color: ${(props) => (props.post === '' ? '#B6B9BB' : '#0870D1')};
+  background-color: ${(props) => (props.post === "" ? "#B6B9BB" : "#0870D1")};
   color: white;
   font-weight: 600px;
   cursor: pointer;
@@ -539,7 +546,7 @@ const StWrapper = styled.div`
 `;
 
 const TextArea = styled.textarea`
-  height: ${(props) => (props.height === 0 ? '51px' : `${props.height}px`)};
+  height: ${(props) => (props.height === 0 ? "51px" : `${props.height}px`)};
   padding: 16px 10px 16px 40px;
   border-radius: 4px;
   outline: none;
@@ -594,7 +601,7 @@ const TextWrap = styled.div`
   align-items: center;
 `;
 const FollowButton = styled.span`
-  color: ${(props) => (props.textcolor ? '#757575' : '#2a86f7')};
+  color: ${(props) => (props.textcolor ? "#757575" : "#2a86f7")};
   cursor: pointer;
   &:hover {
     color: #2a86f7;
@@ -622,7 +629,7 @@ const ProFileBox = styled.div`
 `;
 
 const IconWrap = styled.div`
-  margin-right: ${(props) => props.direction !== 'right' && '24px'};
+  margin-right: ${(props) => props.direction !== "right" && "24px"};
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -630,8 +637,8 @@ const IconWrap = styled.div`
   background-color: inherit;
   justify-content: center;
   align-items: center;
-  position: ${(props) => props.direction === 'right' && 'absolute'};
-  right: ${(props) => props.direction === 'right' && '0px'};
+  position: ${(props) => props.direction === "right" && "absolute"};
+  right: ${(props) => props.direction === "right" && "0px"};
   cursor: pointer;
   &:hover {
     opacity: 0.4;
@@ -643,10 +650,10 @@ const BoxButton = styled.div`
   height: 77%;
   display: flex;
   justify-content: ${(props) =>
-    props.direction === 'right' ? 'flex-end' : 'flex-start'};
+    props.direction === "right" ? "flex-end" : "flex-start"};
   align-items: center;
-  position: ${(props) => props.direction === 'right' && 'absolute'};
-  top: ${(props) => props.direction === 'right' && '40px'};
+  position: ${(props) => props.direction === "right" && "absolute"};
+  top: ${(props) => props.direction === "right" && "40px"};
   cursor: pointer;
 `;
 
@@ -689,7 +696,6 @@ const CommentContainer = styled.div`
 `;
 
 const Body = styled.div`
-  margin: 96px 0px 0px;
   background-color: #f7f8fa;
   /* width: 100vw; */
   /* height: 100vh; */
