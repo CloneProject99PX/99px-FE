@@ -6,21 +6,51 @@ import {
   AiOutlinePlus,
   AiOutlineWindows,
   AiOutlineCrown,
+  AiOutlineCheck,
 } from 'react-icons/ai';
 import { IoIosPeople, IoIosInformationCircleOutline } from 'react-icons/io';
 import { CiTrash } from 'react-icons/ci';
 import styled from 'styled-components';
 import useToggle from '../hooks/useToggle';
 import useDebounce from '../hooks/useDebounce';
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 export default function Upload() {
-  const [locationInputVal, setLocationInputVal] = useState('');
-  const fetchValue = useDebounce(locationInputVal);
+  const [data, setData] = useState({
+    title: '',
+    description: '',
+    location: '',
+    category: '',
+    nsfw: false,
+  });
+  const [cookies, setCookie, removeCookie] = useCookies(['token']);
+
+  useEffect(() => {
+    setCookie(
+      'token',
+      'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJieXVuZ21vb2tpbTg5QGdtYWlsLmNvbSIsImV4cCI6MTY3ODM0Njg2NSwiaWF0IjoxNjc4MzQzMjY1fQ.rfeQ2ELCzsv3Xf3sBmIqYgrJWEPHQ0zf4KA51C0w8OQ'
+    );
+  }, []);
+  // 디바운싱 로케이숀 한글입력방지
+
+  const fetchValue = useDebounce(data.location, 500);
   const onChangeLocationInputValHandler = (e) => {
-    setLocationInputVal(e.target.value);
+    const value = e.target.value.replaceAll(/[^A-Za-z]/gi, '');
+    setData({ ...data, location: value });
   };
+  const [isLocationModal, setIsLocationModal] = useState(false);
+  const [isCategoryModal, setIsCategoryModal] = useState(false);
+
+  // 카테고리 입력값에 필터해주기 한글입력 방지
+  const onChangeCategoryInputValHandler = (e) => {
+    const value = e.target.value.replaceAll(/[^A-Za-z]/gi, '');
+    // setCategoryInputVal(value);
+    setData({ ...data, category: value });
+  };
+
   const [isUpload, setIsUpload] = useToggle();
-  const inputRef = useRef();
+
   const [location] = useState([
     'SEOUL',
     'BUSAN',
@@ -185,7 +215,7 @@ export default function Upload() {
     'YEONGYANG',
     'ULLEUNG',
   ]);
-  const [category, setCategory] = useState([
+  const [category] = useState([
     'Abstract',
     'Aerial',
     'Animals',
@@ -217,12 +247,11 @@ export default function Upload() {
     'Other',
   ]);
 
-  const [data, setData] = useState({
-    title: '',
-    description: '',
-    lacation: '',
-    category: '',
-    nsfw: false,
+  // 입력값에 따라 카테고리 배열 새로 리턴해주는곳
+  const foundCategory = category.filter((item) => {
+    const inputVal = data.category.toUpperCase();
+
+    return item.toUpperCase().includes(inputVal);
   });
 
   // 입력값에 따라 도시 배열 새로 리턴해주는곳
@@ -236,39 +265,57 @@ export default function Upload() {
     return item.includes(inputVal);
   });
 
-  const onUploadImage = useCallback((e) => {
-    if (!e.target.files) {
-      return;
-    }
-    console.log(e.target.files[0]?.name);
-
-    setIsUpload();
-  }, []);
-
-  const onUploadImageButtonClick = useCallback(() => {
-    if (!inputRef.current) {
-      return;
-    }
-    inputRef.current.click();
-  }, []);
-
   const changeTitleHandler = (e) => {
     setData({ ...data, title: e.target.value });
   };
   const changeDescHandler = (e) => {
     setData({ ...data, description: e.target.value });
   };
+  const nsfwCheckButtonHandler = (e) => {
+    setData({ ...data, nsfw: e.target.checked });
+  };
 
-  console.log(data);
+  const fileInputRef = useRef();
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState('');
+  useEffect(() => {
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        setIsUpload();
+      };
+      reader.readAsDataURL(imageFile);
+    } else {
+      setPreview(null);
+    }
+  }, [imageFile]);
+
   return (
-    <>
-      <input
-        style={{ display: 'none' }}
-        onChange={onUploadImage}
-        ref={inputRef}
-        type="file"
-        accept="image/jpg"
-      ></input>
+    <div
+      onClick={() => {
+        if (isCategoryModal) {
+          setIsCategoryModal(false);
+        }
+        if (isLocationModal && data.category) {
+          setIsLocationModal(false);
+        }
+      }}
+    >
+      <button
+        onClick={() => {
+          axios
+            .post('http://43.201.5.38/api/login', {
+              email: 'byungmookim89@gmail.com',
+              password: 'rlaqudan1',
+            })
+            .then((response) => {
+              console.log(response);
+            });
+        }}
+      >
+        하이
+      </button>
       <TitleBox>
         <span
           style={{
@@ -282,11 +329,8 @@ export default function Upload() {
           Upload
         </span>
       </TitleBox>
-      {/* 스테이징 이전에 보일 것 */}
 
-      {/* 스테이징 됐을때 보일 것 */}
-
-      {/* 임시 */}
+      {/* 임시 분기처리*/}
       {!isUpload ? (
         <div
           style={{
@@ -340,10 +384,36 @@ export default function Upload() {
               Upload photos
             </span>
           </div>
-          <div>
-            <BlueButton onClick={onUploadImageButtonClick}>
-              Select photos
-            </BlueButton>
+          <div style={{ marginTop: '24px' }}>
+            <form encType="multipart/form-data">
+              <input
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/jpg"
+                ref={fileInputRef}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+
+                  if (file && file.type.substring(0, 5) === 'image') {
+                    setImageFile(file);
+
+                    // setData({ ...data, image: file });
+                  } else {
+                    setImageFile(null);
+                  }
+                }}
+              ></input>
+              <BlueButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  fileInputRef.current.click();
+
+                  // setData({ ...data, image: imageFile });
+                }}
+              >
+                Select photos
+              </BlueButton>
+            </form>
           </div>
 
           <p style={{ marginTop: '28px' }}>
@@ -383,214 +453,426 @@ export default function Upload() {
           </div>
         </div>
       ) : (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            // height: '85vh',
-            // overflow: 'hidden',
-            background: '#F7F8FA',
-            padding: '24px 64px',
-            gap: '24px',
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+
+            if (
+              !data.title ||
+              !data.category ||
+              !data.description ||
+              !data.location
+            ) {
+              alert('정보를 모두 입력해주세요');
+            }
+            if (
+              category.includes(data.category) &&
+              location.includes(data.location)
+            ) {
+              const formData = new FormData();
+              const { title, description, location, category, nsfw } = data;
+              const body = JSON.stringify({
+                title,
+                description,
+                location,
+                category,
+                nsfw,
+              });
+              formData.append(
+                'photoRequestDto',
+                new Blob([body], { type: 'application/json' })
+              );
+              // const blob = new Blob([JSON.stringify(data)], {
+              //   type: 'application/json',
+              // });
+
+              formData.append('image', imageFile);
+
+              // formData.append('description', data.description);
+              // formData.append('title', data.title);
+              // formData.append('location', data.location);
+              // formData.append('category', data.category);
+              // formData.append('nsfw', data.nsfw);
+              for (const f of formData.values()) {
+                console.log(f);
+              }
+
+              axios
+                .post('http://43.201.5.38/api/manage/upload', formData, {
+                  headers: {
+                    Authorization: `Bearer ${cookies.token}`,
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then(function (response) {
+                  console.log(response);
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+              // alert('전송준비 완료');
+
+              window.location.reload();
+            } else {
+              alert('위치정보랑 카테고리 똑바로 입력하세요');
+            }
           }}
         >
-          <StBox>
-            <BlueBox>
-              <AiOutlineCrown size="30"></AiOutlineCrown>
-              Over 6 million dollars in royalties paid to 500px photographers.
-              Start earning today
-            </BlueBox>
-            <ButtonBox>
-              <div style={{ display: 'flex' }}>
-                <Button direction="left">
-                  <AiOutlinePlus size="20" color="black"></AiOutlinePlus>Add
-                </Button>
-                <Button direction="left">
-                  <CiTrash color="black" size="16"></CiTrash>Remove(1)
-                </Button>
-              </div>
-              <div style={{ display: 'flex' }}>
-                <Button direction="right">
-                  <AiOutlineWindows size="20"></AiOutlineWindows>Select all
-                </Button>
-                <Button direction="right">
-                  <AiOutlineWindows size="20"></AiOutlineWindows>Multi select
-                </Button>
-              </div>
-            </ButtonBox>
-            {foundLocation.map((item, i) => {
-              return <div key={i}>{item}</div>;
-            })}
-          </StBox>
-
           <div
             style={{
-              width: '360px',
-              padding: '0 24px',
-              background: 'white',
-              border: '2px solid #EEEFF2',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              height: '79vh',
+              // overflow: 'hidden',
+              background: '#F7F8FA',
+              padding: '24px 64px',
+              gap: '24px',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '56px',
-                fontWeight: '700',
-              }}
-            >
-              1 photo selected
-            </div>
-            <BlueBox>
-              <IoIosInformationCircleOutline size="30"></IoIosInformationCircleOutline>
-              Keywords automatically applied.
-              <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
-            </BlueBox>
-            <div style={{ marginTop: '16px', display: 'flex' }}>
-              <CheckBox type="checkbox"></CheckBox>
-              <div style={{ marginLeft: '3px' }}>
-                License this photo
-                <IoIosInformationCircleOutline></IoIosInformationCircleOutline>
-                <br></br>{' '}
-                <span
+            <StBox>
+              <BlueBox>
+                <AiOutlineCrown size="30"></AiOutlineCrown>
+                Over 6 million dollars in royalties paid to 500px photographers.
+                Start earning today
+              </BlueBox>
+              <ButtonBox>
+                <div style={{ display: 'flex' }}>
+                  <StButton direction="left">
+                    <AiOutlinePlus size="20" color="black"></AiOutlinePlus>Add
+                  </StButton>
+                  <StButton direction="left">
+                    <CiTrash color="black" size="16"></CiTrash>Remove(1)
+                  </StButton>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <StButton direction="right">
+                    <AiOutlineWindows size="20"></AiOutlineWindows>Select all
+                  </StButton>
+                  <StButton direction="right">
+                    <AiOutlineWindows size="20"></AiOutlineWindows>Multi select
+                  </StButton>
+                </div>
+              </ButtonBox>
+
+              <img
+                style={{
+                  objectFit: 'cover',
+                  outline: '2px solid #0870D1',
+                  padding: '2px',
+                  margin: '4px',
+                }}
+                height="184px"
+                src={preview}
+              ></img>
+            </StBox>
+            <div>
+              <div
+                style={{
+                  width: '360px',
+                  padding: '0 24px',
+                  background: 'white',
+                  border: '2px solid #EEEFF2',
+                  height: '100%',
+                  overflowY: 'auto',
+                }}
+              >
+                <div
                   style={{
-                    fontSize: '.9rem',
-                    color: '#787E83',
-                    letterSpacing: '-0.2px',
+                    width: '360px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '56px',
+                    fontWeight: '700',
+                    position: 'sticky',
+                    top: '0',
+                    background: 'white',
+                    zIndex: '1',
                   }}
                 >
-                  Get paid for my photos with{' '}
-                  <span style={{ color: '#0870d1' }}>500px Licensing.</span>
-                </span>
+                  1 photo selected
+                </div>
+
+                <BlueBox>
+                  <IoIosInformationCircleOutline size="30"></IoIosInformationCircleOutline>
+                  Keywords automatically applied.
+                  <IoIosInformationCircleOutline size="20"></IoIosInformationCircleOutline>
+                </BlueBox>
+                <div style={{ marginTop: '16px', display: 'flex' }}>
+                  <div>
+                    <CheckBox
+                      onClick={nsfwCheckButtonHandler}
+                      type="checkbox"
+                    ></CheckBox>
+                  </div>
+
+                  <div style={{ marginLeft: '20px' }}>
+                    NSFW content
+                    <IoIosInformationCircleOutline></IoIosInformationCircleOutline>
+                    <br></br>{' '}
+                    <span
+                      style={{
+                        fontSize: '.9rem',
+                        color: '#787E83',
+                        letterSpacing: '-0.2px',
+                      }}
+                    >
+                      This photo contains nudity, sexually explicit, or
+                      suggestive content.{' '}
+                      {/* <span style={{ color: '#0870d1' }}>500px Licensing.</span> */}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginTop: '16px',
+                    fontSize: '.9rem',
+                    color: '#787E83',
+                  }}
+                >
+                  * is required
+                </div>
+                <StBlock>
+                  <div
+                    style={{
+                      fontSize: '.9rem',
+                      color: '#787E83',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    Title*
+                  </div>
+
+                  <StInput>
+                    <input
+                      value={data.title || ''}
+                      onChange={changeTitleHandler}
+                      style={{
+                        border: 'none',
+                        backgroundColor: 'inherit',
+                        width: '100%',
+                        height: '100%',
+                        outline: 'none',
+                        fontSize: '1.1rem',
+                      }}
+                      placeholder="e.g. Young man surfing in the ocean"
+                    ></input>
+                  </StInput>
+                </StBlock>
+                <StBlock>
+                  <div
+                    style={{
+                      fontSize: '.9rem',
+                      color: '#787E83',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    Description*
+                  </div>
+
+                  <StInput>
+                    <textarea
+                      value={data.description || ''}
+                      onChange={changeDescHandler}
+                      style={{
+                        resize: 'none',
+                        border: 'none',
+                        backgroundColor: 'inherit',
+                        width: '100%',
+                        height: '50px',
+                        outline: 'none',
+                        fontFamily: 'inherit',
+                        fontSize: '1rem',
+                      }}
+                      placeholder="e.g. Low angle vier of young African man surfing in the ocean with a clear blue sky"
+                    ></textarea>
+                  </StInput>
+                </StBlock>
+                <StBlock onClick={() => setIsLocationModal(true)}>
+                  <div
+                    style={{
+                      fontSize: '.9rem',
+                      color: '#787E83',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    Location*
+                  </div>
+
+                  <StInput>
+                    <input
+                      value={data.location}
+                      onChange={onChangeLocationInputValHandler}
+                      style={{
+                        border: 'none',
+                        backgroundColor: 'inherit',
+                        width: '100%',
+                        height: '100%',
+                        outline: 'none',
+                        fontSize: '1.1rem',
+                      }}
+                      placeholder="Enter Location only alphabetical letters"
+                    ></input>
+                  </StInput>
+                  {isLocationModal ? (
+                    <div
+                      style={{
+                        width: '98%',
+                        // height: '200px',
+                        position: 'absolute',
+                        zIndex: '1',
+                        background: 'white',
+                        marginTop: '4px',
+                        // border: '1px solid lightgray',
+                      }}
+                    >
+                      {foundLocation.slice(0, 6).map((item, i) => {
+                        return (
+                          <div
+                            key={i}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setData({ ...data, location: item });
+                              setIsLocationModal(false);
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              padding: '4px 16px',
+                              border: '1px solid lightgray',
+
+                              cursor: 'pointer',
+                              fontSize: '.8rem',
+                              color: 'gray',
+                            }}
+                          >
+                            {item}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </StBlock>
+
+                <StBlock onClick={() => setIsCategoryModal(!isCategoryModal)}>
+                  <div
+                    style={{
+                      fontSize: '.9rem',
+                      color: '#787E83',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    Category*
+                  </div>
+                  <StInput>
+                    <input
+                      onChange={onChangeCategoryInputValHandler}
+                      style={{
+                        border: 'none',
+                        backgroundColor: 'inherit',
+                        width: '100%',
+                        height: '100%',
+                        outline: 'none',
+                        fontSize: '1.1rem',
+                      }}
+                      placeholder="Select Category"
+                      value={data.category}
+                    ></input>
+                  </StInput>
+                  {isCategoryModal && (
+                    <div
+                      style={{
+                        marginTop: '10px',
+                        overflow: 'auto',
+                        maxHeight: '300px',
+                        borderRadius: '5px',
+                        boxShadow: '10px grey',
+                        border: '1px solid lightgray',
+                        width: '98%',
+                        position: 'absolute',
+                        zIndex: '1',
+                        background: 'white',
+                      }}
+                    >
+                      {foundCategory.map((item, i) => {
+                        return (
+                          <div
+                            key={i}
+                            onClick={() => {
+                              if (data.category === item) {
+                                setData({ ...data, category: '' });
+                              } else {
+                                setData({ ...data, category: item });
+                              }
+                            }}
+                            style={{
+                              height: '46px',
+
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '0px 24px',
+                            }}
+                          >
+                            {item}
+                            {item === data.category && (
+                              <AiOutlineCheck
+                                color="#0870D1"
+                                size="20"
+                              ></AiOutlineCheck>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </StBlock>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    height: '70px',
+                    fontWeight: '700',
+                    position: 'sticky',
+                    bottom: '0',
+                    backgroundColor: 'white',
+                    // zIndex: '1',
+                  }}
+                >
+                  <div>
+                    <div
+                      onClick={() => {
+                        window.location.reload();
+                      }}
+                      style={{
+                        marginRight: '24px',
+                        color: '#0870d1',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                  <div>
+                    <BlueButton>Upload</BlueButton>
+                  </div>
+                </div>
               </div>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginTop: '16px',
-                fontSize: '.9rem',
-                color: '#787E83',
-              }}
-            >
-              * is required
-            </div>
-
-            <StBlock>
-              <div
-                style={{
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  marginBottom: '4px',
-                }}
-              >
-                Title*
-              </div>
-
-              <StInput>
-                <input
-                  value={data.title || ''}
-                  onChange={changeTitleHandler}
-                  style={{
-                    border: 'none',
-                    backgroundColor: 'inherit',
-                    width: '100%',
-                    height: '100%',
-                    outline: 'none',
-                    fontSize: '1.1rem',
-                  }}
-                  placeholder="e.g. Young man surfing in the ocean"
-                ></input>
-              </StInput>
-            </StBlock>
-            <StBlock>
-              <div
-                style={{
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  marginBottom: '4px',
-                }}
-              >
-                Description
-              </div>
-
-              <StInput>
-                <textarea
-                  value={data.description || ''}
-                  onChange={changeDescHandler}
-                  style={{
-                    resize: 'none',
-                    border: 'none',
-                    backgroundColor: 'inherit',
-                    width: '100%',
-                    height: '50px',
-                    outline: 'none',
-                    fontFamily: 'inherit',
-                    fontSize: '1rem',
-                  }}
-                  placeholder="e.g. Low angle vier of young African man surfing in the ocean with a clear blue sky"
-                ></textarea>
-              </StInput>
-            </StBlock>
-            <StBlock>
-              <div
-                style={{
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  marginBottom: '4px',
-                }}
-              >
-                Location
-              </div>
-
-              <StInput>
-                <input
-                  value={locationInputVal}
-                  onChange={onChangeLocationInputValHandler}
-                  style={{
-                    border: 'none',
-                    backgroundColor: 'inherit',
-                    width: '100%',
-                    height: '100%',
-                    outline: 'none',
-                    fontSize: '1.1rem',
-                  }}
-                  placeholder="Enter Location"
-                ></input>
-              </StInput>
-            </StBlock>
-            <StBlock>
-              <div
-                style={{
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  marginBottom: '4px',
-                }}
-              >
-                Category*
-              </div>
-              <div
-                style={{
-                  border: '1px solid #D7D8DB',
-                  borderRadius: '4px',
-
-                  fontSize: '.9rem',
-                  color: '#787E83',
-                  padding: '12px 16px',
-                }}
-              >
-                Public
-              </div>
-            </StBlock>
           </div>
-        </div>
+        </form>
       )}
-    </>
+    </div>
   );
 }
-const Button = styled.button`
+const StButton = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -625,6 +907,7 @@ const BlueBox = styled.div`
 `;
 const StInput = styled.div`
   border: 1px solid #d7d8db;
+  position: relative;
   border-radius: 4px;
   padding: 12px 16px;
   width: 323px;
@@ -633,6 +916,7 @@ const StInput = styled.div`
 
 const StBlock = styled.div`
   margin-bottom: 24px;
+  position: relative;
 `;
 const CheckBox = styled.input`
   width: 24px;
@@ -657,7 +941,7 @@ const BlueButton = styled.button`
   cursor: pointer;
   width: 153px;
   height: 48px;
-  margin-top: 24px;
+  /* margin-top: 24px; */
   background-color: #0870d1;
   color: white;
   font-weight: 600;
