@@ -65,7 +65,7 @@ const Discover = () => {
   }, [counter]);
 
   useEffect(() => {
-    loadImage(0, 5).then((res) => {
+    loadImage(0, 7).then((res) => {
       setImageList(res.data.data.content);
     });
     io.observe(infScrollRef.current);
