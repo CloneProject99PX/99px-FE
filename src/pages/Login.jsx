@@ -23,12 +23,27 @@ const Login = () => {
   }, [isLogin]);
 
   const logInButtonHandler = () => {
-    logIn({ email: emailValue, password: pwValue })
-      .then((res) => {
-        setCookie("authorization", res.headers.authorization);
-        navigate("/");
-      })
-      .catch((error) => console.log(error));
+    if (!(emailValue && pwValue)) {
+      alert("Please fill the blanks");
+    } else if (
+      !(emailValue.includes("@") || emailValue.includes("@")
+        ? emailValue.split("@")[1].includes(".")
+        : null)
+    ) {
+      alert("Make sure your email right");
+    } else {
+      logIn({ email: emailValue, password: pwValue })
+        .then((res) => {
+          setCookie("authorization", res.headers.authorization);
+          navigate("/");
+        })
+        .catch((error) => {
+          if (error.response.status === 400)
+            return alert(
+              "Email or Password does not right. Please check it again"
+            );
+        });
+    }
   };
 
   return (

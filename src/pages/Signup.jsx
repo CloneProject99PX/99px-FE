@@ -22,16 +22,26 @@ const Signup = () => {
   }, [isLogin]);
 
   const signUpButtonHandler = () => {
-    signUp({ email: emailValue, password: pwValue })
-      .then(() => {
-        alert("Sign up complete");
-        navigate("/login");
-      })
-      .catch((error) => {
-        if (error.response.status === 400) {
-          alert("Email is already used.");
-        }
-      });
+    if (!(emailValue && pwValue)) {
+      alert("Please fill the blanks");
+    } else if (
+      !(emailValue.includes("@") || emailValue.includes("@")
+        ? emailValue.split("@")[1].includes(".")
+        : null)
+    ) {
+      alert("Make sure your email right");
+    } else {
+      signUp({ email: emailValue, password: pwValue })
+        .then(() => {
+          alert("Sign up complete");
+          navigate("/login");
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            alert("Email is already used.");
+          }
+        });
+    }
   };
 
   return (

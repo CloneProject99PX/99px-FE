@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import useIsLogin from "../../hooks/useIsLogin";
+import useLogout from "../../hooks/useLogout";
 import Logo from "../asset/Logo";
 import Magnifier from "../asset/Magnifier";
 import UpArrow from "../asset/UpArrow";
@@ -16,6 +17,12 @@ const Header = () => {
   ];
 
   const isLogin = useIsLogin();
+  const logoutEvent = useLogout();
+
+  const logoutButtonHandler = () => {
+    logoutEvent();
+    window.location.replace("/");
+  };
 
   return (
     <StHeaderDiv>
@@ -40,6 +47,15 @@ const Header = () => {
         {isLogin ? null : (
           <StSignupButton to={"/signup"}>Sign up</StSignupButton>
         )}
+        {isLogin ? (
+          <StLogoutButton
+            onClick={() => {
+              logoutButtonHandler();
+            }}
+          >
+            Log out
+          </StLogoutButton>
+        ) : null}
         {isLogin ? (
           <StUploadButton to={"/upload"}>
             <UpArrow />
@@ -189,6 +205,29 @@ const StUploadButton = styled(Link)`
   border-style: solid;
   text-decoration: none;
   height: 32px;
+  color: black;
+  gap: 0.25rem;
+  max-height: 24px;
+  &:hover {
+    color: #1890ff;
+    cursor: pointer;
+  }
+`;
+
+const StLogoutButton = styled(Link)`
+  margin-left: 1rem;
+  font-family: "helveticaneue";
+  font-weight: 700;
+  font-size: 1rem;
+  background-color: #f7f8fa;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.1s ease 0s;
+  text-decoration: none;
+  height: 36px;
   color: black;
   gap: 0.25rem;
   max-height: 24px;

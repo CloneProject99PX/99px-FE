@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import Header from "../components/ui/Header";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Main = () => {
+  const isLogin = useIsLogin();
+
   return (
     <Wrapper>
       <Header />
@@ -19,9 +23,11 @@ const Main = () => {
           <br />
           the world. We're not guided by fads—just great photography.
         </StDesc>
-        <Link to="/signup">
-          <StButton>Sign up</StButton>
-        </Link>
+        {isLogin ? null : (
+          <Link to="/signup">
+            <StButton>Sign up</StButton>
+          </Link>
+        )}
       </StMainDiv>
     </Wrapper>
   );
