@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRef, useCallback } from 'react';
+import { useRef } from 'react';
 import {
   AiOutlineArrowUp,
   AiOutlineInfoCircle,
@@ -302,7 +302,7 @@ export default function Upload() {
         }
       }}
     >
-      <button
+      {/* <button
         onClick={() => {
           axios
             .post('http://43.201.5.38/api/login', {
@@ -315,7 +315,7 @@ export default function Upload() {
         }}
       >
         하이
-      </button>
+      </button> */}
       <TitleBox>
         <span
           style={{
