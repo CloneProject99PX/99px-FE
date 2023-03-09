@@ -1,9 +1,51 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { logIn } from "../api/auth";
 import Wrapper from "../components/common/Wrapper";
 import Header from "../components/ui/Header";
+import useIsLogin from "../hooks/useIsLogin";
 
 const Login = () => {
+  const [emailValue, setEmailValue] = useState("");
+  const [pwValue, setPwValue] = useState("");
+  const navigate = useNavigate();
+
+  const isLogin = useIsLogin();
+
+  const [cookie, setCookie, delCookie] = useCookies(["authorization"]);
+
+  useEffect(() => {
+    if (isLogin === true) {
+      navigate("/");
+    }
+  }, [isLogin]);
+
+  const logInButtonHandler = () => {
+    if (!(emailValue && pwValue)) {
+      alert("Please fill the blanks");
+    } else if (
+      !(emailValue.includes("@") || emailValue.includes("@")
+        ? emailValue.split("@")[1].includes(".")
+        : null)
+    ) {
+      alert("Make sure your email right");
+    } else {
+      logIn({ email: emailValue, password: pwValue })
+        .then((res) => {
+          setCookie("authorization", res.headers.authorization);
+          navigate("/");
+        })
+        .catch((error) => {
+          if (error.response.status === 400)
+            return alert(
+              "Email or Password does not right. Please check it again"
+            );
+        });
+    }
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -12,13 +54,26 @@ const Login = () => {
           <StLoginHeader>Log in to 500px</StLoginHeader>
           <StInputDiv>
             <StInputTitle>Email or Username*</StInputTitle>
-            <StInput />
+            <StInput
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
+            />
           </StInputDiv>
           <StInputDiv>
             <StInputTitle>Password*</StInputTitle>
-            <StInput />
+            <StInput
+              type="password"
+              value={pwValue}
+              onChange={(e) => setPwValue(e.target.value)}
+            />
           </StInputDiv>
-          <StLoginButton>Log in</StLoginButton>
+          <StLoginButton
+            onClick={() => {
+              logInButtonHandler();
+            }}
+          >
+            Log in
+          </StLoginButton>
           <StKakaoButton>Log in with Kakao</StKakaoButton>
           <StLoginLink>
             Don't have an account? <StLink to={"/signup"}>Sign up</StLink>

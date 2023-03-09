@@ -5,12 +5,12 @@ import DropdownCheck from "../asset/DropdownCheck.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { allCategoriesFilter } from "../../redux/modules/filter";
 
-const DropdownCategoriesDiv = ({ display, onClick }) => {
+const DropdownCategoriesDiv = ({ onClick }) => {
   const filter = useSelector((state) => state.filter);
   const dispatch = useDispatch();
 
   return (
-    <StDropdownBox display={display}>
+    <StDropdownBox>
       <StDropdownBoxInnerDiv>
         <StAllCategoriesDiv onClick={() => dispatch(allCategoriesFilter())}>
           <StCheckBox checked={filter.checked.length === 0} />
@@ -39,6 +39,7 @@ const StDropdownBox = styled.div`
   position: absolute;
   right: -8px;
   width: 442px;
+  background-color: white;
   max-height: calc(100vh - 264px);
   min-height: 24px;
   max-width: inherit;

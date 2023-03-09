@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Wrapper from "../components/common/Wrapper";
 import DropdownCategoriesDiv from "../components/Discover/DropdownCategoriesDiv";
@@ -6,6 +6,9 @@ import Dropdown from "../components/Discover/Dropdown";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { useSelector } from "react-redux";
 import Header from "../components/ui/Header";
+import DropdownPhotographersDiv from "../components/Discover/DropdownPhotographersDiv";
+import DropdownSortDiv from "../components/Discover/DropdownSortDiv";
+import { loadImage } from "../api/loadImage";
 
 const Discover = () => {
   const checkedCategories = useSelector((state) => state.filter.checked);
@@ -39,9 +42,25 @@ const Discover = () => {
   const [categoriesToggle, setCategoriesToggle] = useState(false);
   const [photographersToggle, setPhotographersToggle] = useState(false);
   const [sortBy, setSortBy] = useState(false);
+  const [imageList, setImageList] = useState([]);
+
+  useEffect(() => {
+    loadImage(0, 10).then((res) => {
+      console.log(res.data.data.content);
+      setImageList(res.data.data.content);
+    });
+  }, []);
 
   const categoriesRef = useOutsideClick(() => {
     setCategoriesToggle(false);
+  });
+
+  const photographersRef = useOutsideClick(() => {
+    setPhotographersToggle(false);
+  });
+
+  const sortByRef = useOutsideClick(() => {
+    setSortBy(false);
   });
 
   return (
@@ -85,15 +104,44 @@ const Discover = () => {
               />
             ) : null}
           </StDropdownDiv>
-          <StDropdownDiv>
-            <Dropdown key={"Photographers"}>Photographers</Dropdown>
+          <StDropdownDiv ref={photographersRef}>
+            <Dropdown
+              key={"Photographers"}
+              isToggle={photographersToggle}
+              onClick={() => {
+                setPhotographersToggle(!photographersToggle);
+              }}
+            >
+              Photographers
+            </Dropdown>
+            {photographersToggle ? <DropdownPhotographersDiv /> : null}
           </StDropdownDiv>
-          <StDropdownDiv>
-            <Dropdown key={"Sort"}>Sort by: {`Pulse`}</Dropdown>
+          <StDropdownDiv ref={sortByRef}>
+            <Dropdown
+              key={"Sort"}
+              isToggle={sortBy}
+              onClick={() => {
+                setSortBy(!sortBy);
+              }}
+            >
+              Sort by: {`Pulse`}
+            </Dropdown>
+            {sortBy ? <DropdownSortDiv /> : null}
           </StDropdownDiv>
         </StFilterBox>
       </StStickyBar>
-      <StImageList></StImageList>
+      <StImageList>
+        <StAllImageeDiv>
+          {imageList?.map((val) => {
+            return (
+              <StImageBox key={val.id}>
+                <StImage src={val.url} />
+                <StInfoBox />
+              </StImageBox>
+            );
+          })}
+        </StAllImageeDiv>
+      </StImageList>
     </Wrapper>
   );
 };
@@ -183,4 +231,39 @@ const StDropdownDiv = styled.div`
 const StImageList = styled.div`
   background-color: rgb(247, 248, 250);
   min-height: 2000px;
+  z-index: -5;
+`;
+
+const StAllImageeDiv = styled.div`
+  margin: 0 4rem;
+  margin-top: 0.5rem;
+  display: flex;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  flex-wrap: wrap;
+  height: 100%;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const StImageBox = styled.div`
+  position: relative;
+`;
+
+const StImage = styled.img`
+  width: auto;
+  max-height: 250px;
+  object-fit: cover;
+  display: block;
+  flex-grow: 1;
+`;
+
+const StInfoBox = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transition: 200ms;
+  &:hover {
+    background: linear-gradient(rgba(0, 0, 0, 0), 90%, rgba(0, 0, 0, 0.15));
+  }
 `;

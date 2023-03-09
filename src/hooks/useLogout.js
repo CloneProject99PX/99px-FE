@@ -5,7 +5,7 @@ const useLogout = () => {
   const useLogout = () => {
     cookies.remove("authorization");
   };
-  return [useLogout];
+  return useLogout;
 };
 
 export default useLogout;

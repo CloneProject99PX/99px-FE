@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   AiOutlineArrowUp,
   AiOutlineInfoCircle,
@@ -15,6 +14,7 @@ import useToggle from '../hooks/useToggle';
 import useDebounce from '../hooks/useDebounce';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
+import Header from "../components/ui/Header";
 
 export default function Upload() {
   const [data, setData] = useState({
@@ -302,28 +302,14 @@ export default function Upload() {
         }
       }}
     >
-      {/* <button
-        onClick={() => {
-          axios
-            .post('http://43.201.5.38/api/login', {
-              email: 'byungmookim89@gmail.com',
-              password: 'rlaqudan1',
-            })
-            .then((response) => {
-              console.log(response);
-            });
-        }}
-      >
-        하이
-      </button> */}
       <TitleBox>
         <span
           style={{
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '21px',
-            fontWeight: '700',
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            fontSize: "21px",
+            fontWeight: "700",
           }}
         >
           Upload
@@ -334,51 +320,51 @@ export default function Upload() {
       {!isUpload ? (
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            height: '85vh',
-            background: '#F7F8FA',
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            height: "85vh",
+            background: "#F7F8FA",
           }}
         >
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#edf6fe',
-              width: '100%',
-              padding: '12px',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#edf6fe",
+              width: "100%",
+              padding: "12px",
             }}
           >
             <IoIosPeople size="32"></IoIosPeople>
-            <p style={{ paddingLeft: '16px' }}>
+            <p style={{ paddingLeft: "16px" }}>
               You're on a free Pro membership trial! You have unlimited uploads
-              for 10 more days.{' '}
-              <span style={{ fontWeight: '700', color: 'rgb(127, 193, 255)' }}>
+              for 10 more days.{" "}
+              <span style={{ fontWeight: "700", color: "rgb(127, 193, 255)" }}>
                 Learn more about memberships
               </span>
             </p>
           </div>
           <div>
             <AiOutlineArrowUp
-              style={{ marginTop: '32px' }}
+              style={{ marginTop: "32px" }}
               size="44"
             ></AiOutlineArrowUp>
           </div>
           <div
             style={{
-              marginTop: '20px',
+              marginTop: "20px",
             }}
           >
             <span
               style={{
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                fontSize: '21px',
-                fontWeight: '800',
-                letterSpacing: '.3px',
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                fontSize: "21px",
+                fontWeight: "800",
+                letterSpacing: ".3px",
               }}
             >
               Upload photos
@@ -416,35 +402,35 @@ export default function Upload() {
             </form>
           </div>
 
-          <p style={{ marginTop: '28px' }}>
+          <p style={{ marginTop: "28px" }}>
             Or drag and drop photos anywhere on this page
           </p>
           <div
             style={{
-              padding: '16px',
+              padding: "16px",
 
-              background: '#eeeff2',
-              marginTop: '24px',
+              background: "#eeeff2",
+              marginTop: "24px",
             }}
           >
             <div>
-              <span style={{ fontWeight: '700' }}>Photo requirements</span>
+              <span style={{ fontWeight: "700" }}>Photo requirements</span>
               <div>.jpg only</div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 Max. photo dimensions are 200MP/megapixels
                 <AiOutlineInfoCircle
                   size="16"
-                  style={{ marginLeft: '8px' }}
+                  style={{ marginLeft: "8px" }}
                 ></AiOutlineInfoCircle>
               </div>
             </div>
-            <div style={{ marginTop: '20px' }}>
-              <span style={{ fontWeight: '700' }}>Licensing requirements</span>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ marginTop: "20px" }}>
+              <span style={{ fontWeight: "700" }}>Licensing requirements</span>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 Min. photo dimensions are 3MP/megapixels
                 <AiOutlineInfoCircle
                   size="16"
-                  style={{ marginLeft: '8px' }}
+                  style={{ marginLeft: "8px" }}
                 ></AiOutlineInfoCircle>
               </div>
               <div>No watermarks, logos, or borders</div>
@@ -879,12 +865,12 @@ const StButton = styled.button`
   border-radius: 20px;
   background-color: white;
   border: 1px solid #dadbdd;
-  margin-right: ${(props) => props.direction === 'left' && '8px'};
-  margin-left: ${(props) => props.direction === 'right' && '8px'};
-  height: ${(props) => (props.direction === 'left' ? '32px' : '40px')};
+  margin-right: ${(props) => props.direction === "left" && "8px"};
+  margin-left: ${(props) => props.direction === "right" && "8px"};
+  height: ${(props) => (props.direction === "left" ? "32px" : "40px")};
   padding: 0px 24px 0 20px;
-  font-weight: ${(props) => props.direction === 'left' && '700'};
-  color: ${(props) => (props.direction === 'left' ? '#0870D1' : '#535659')};
+  font-weight: ${(props) => props.direction === "left" && "700"};
+  color: ${(props) => (props.direction === "left" ? "#0870D1" : "#535659")};
   white-space: nowrap;
 `;
 
@@ -932,7 +918,6 @@ const StBox = styled.div`
 `;
 
 const TitleBox = styled.div`
-  margin-top: 72px;
   height: 56px;
   padding-left: 64px;
 `;
