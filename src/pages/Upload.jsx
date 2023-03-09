@@ -14,7 +14,8 @@ import useToggle from '../hooks/useToggle';
 import useDebounce from '../hooks/useDebounce';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import Header from "../components/ui/Header";
+import Header from '../components/ui/Header';
+import { uploadImage } from '../api/upload';
 
 export default function Upload() {
   const [data, setData] = useState({
@@ -24,14 +25,7 @@ export default function Upload() {
     category: '',
     nsfw: false,
   });
-  const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
-  useEffect(() => {
-    setCookie(
-      'token',
-      'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJieXVuZ21vb2tpbTg5QGdtYWlsLmNvbSIsImV4cCI6MTY3ODM0Njg2NSwiaWF0IjoxNjc4MzQzMjY1fQ.rfeQ2ELCzsv3Xf3sBmIqYgrJWEPHQ0zf4KA51C0w8OQ'
-    );
-  }, []);
   // 디바운싱 로케이숀 한글입력방지
 
   const fetchValue = useDebounce(data.location, 500);
@@ -305,11 +299,11 @@ export default function Upload() {
       <TitleBox>
         <span
           style={{
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            fontSize: "21px",
-            fontWeight: "700",
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '21px',
+            fontWeight: '700',
           }}
         >
           Upload
@@ -320,51 +314,51 @@ export default function Upload() {
       {!isUpload ? (
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-            height: "85vh",
-            background: "#F7F8FA",
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+            height: '85vh',
+            background: '#F7F8FA',
           }}
         >
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#edf6fe",
-              width: "100%",
-              padding: "12px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#edf6fe',
+              width: '100%',
+              padding: '12px',
             }}
           >
             <IoIosPeople size="32"></IoIosPeople>
-            <p style={{ paddingLeft: "16px" }}>
+            <p style={{ paddingLeft: '16px' }}>
               You're on a free Pro membership trial! You have unlimited uploads
-              for 10 more days.{" "}
-              <span style={{ fontWeight: "700", color: "rgb(127, 193, 255)" }}>
+              for 10 more days.{' '}
+              <span style={{ fontWeight: '700', color: 'rgb(127, 193, 255)' }}>
                 Learn more about memberships
               </span>
             </p>
           </div>
           <div>
             <AiOutlineArrowUp
-              style={{ marginTop: "32px" }}
+              style={{ marginTop: '32px' }}
               size="44"
             ></AiOutlineArrowUp>
           </div>
           <div
             style={{
-              marginTop: "20px",
+              marginTop: '20px',
             }}
           >
             <span
               style={{
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                fontSize: "21px",
-                fontWeight: "800",
-                letterSpacing: ".3px",
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '21px',
+                fontWeight: '800',
+                letterSpacing: '.3px',
               }}
             >
               Upload photos
@@ -402,35 +396,35 @@ export default function Upload() {
             </form>
           </div>
 
-          <p style={{ marginTop: "28px" }}>
+          <p style={{ marginTop: '28px' }}>
             Or drag and drop photos anywhere on this page
           </p>
           <div
             style={{
-              padding: "16px",
+              padding: '16px',
 
-              background: "#eeeff2",
-              marginTop: "24px",
+              background: '#eeeff2',
+              marginTop: '24px',
             }}
           >
             <div>
-              <span style={{ fontWeight: "700" }}>Photo requirements</span>
+              <span style={{ fontWeight: '700' }}>Photo requirements</span>
               <div>.jpg only</div>
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 Max. photo dimensions are 200MP/megapixels
                 <AiOutlineInfoCircle
                   size="16"
-                  style={{ marginLeft: "8px" }}
+                  style={{ marginLeft: '8px' }}
                 ></AiOutlineInfoCircle>
               </div>
             </div>
-            <div style={{ marginTop: "20px" }}>
-              <span style={{ fontWeight: "700" }}>Licensing requirements</span>
-              <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ marginTop: '20px' }}>
+              <span style={{ fontWeight: '700' }}>Licensing requirements</span>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 Min. photo dimensions are 3MP/megapixels
                 <AiOutlineInfoCircle
                   size="16"
-                  style={{ marginLeft: "8px" }}
+                  style={{ marginLeft: '8px' }}
                 ></AiOutlineInfoCircle>
               </div>
               <div>No watermarks, logos, or borders</div>
@@ -483,13 +477,7 @@ export default function Upload() {
                 console.log(f);
               }
 
-              axios
-                .post('http://43.201.5.38/api/manage/upload', formData, {
-                  headers: {
-                    Authorization: `Bearer ${cookies.token}`,
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
+              uploadImage(formData)
                 .then(function (response) {
                   console.log(response);
                 })
@@ -498,7 +486,7 @@ export default function Upload() {
                 });
               // alert('전송준비 완료');
 
-              window.location.reload();
+              // window.location.reload();
             } else {
               alert('위치정보랑 카테고리 똑바로 입력하세요');
             }
@@ -865,12 +853,12 @@ const StButton = styled.button`
   border-radius: 20px;
   background-color: white;
   border: 1px solid #dadbdd;
-  margin-right: ${(props) => props.direction === "left" && "8px"};
-  margin-left: ${(props) => props.direction === "right" && "8px"};
-  height: ${(props) => (props.direction === "left" ? "32px" : "40px")};
+  margin-right: ${(props) => props.direction === 'left' && '8px'};
+  margin-left: ${(props) => props.direction === 'right' && '8px'};
+  height: ${(props) => (props.direction === 'left' ? '32px' : '40px')};
   padding: 0px 24px 0 20px;
-  font-weight: ${(props) => props.direction === "left" && "700"};
-  color: ${(props) => (props.direction === "left" ? "#0870D1" : "#535659")};
+  font-weight: ${(props) => props.direction === 'left' && '700'};
+  color: ${(props) => (props.direction === 'left' ? '#0870D1' : '#535659')};
   white-space: nowrap;
 `;
 

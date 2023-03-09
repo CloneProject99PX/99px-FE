@@ -15,13 +15,15 @@ import { CiLocationOn } from 'react-icons/ci';
 import { SlFire } from 'react-icons/sl';
 import { AiOutlineBarChart } from 'react-icons/ai';
 import { FaUserCircle } from 'react-icons/fa';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useInput from '../hooks/useInput';
 import useFullscreen from '../hooks/useFullscreen';
 import useToggle from '../hooks/useToggle';
 import axios from 'axios';
+import { getInfo } from '../api/getinfo';
+import { useQuery } from 'react-query';
 
 const Photo = () => {
   const { element, triggerFull, exitFull } = useFullscreen();
@@ -39,6 +41,12 @@ const Photo = () => {
     const scHeight = e.target.scrollHeight;
     setHeight(scHeight);
   };
+  const [info, setInfo] = useState();
+  const params = useParams();
+
+  getInfo(params.id).then((res) => {
+    setInfo(res.data.data);
+  });
 
   return (
     <Body>
@@ -74,7 +82,7 @@ const Photo = () => {
 
               width: 'auto',
             }}
-            src="https://static01.nyt.com/images/2022/07/13/reader-center/15DAILY-webb-audio-app/15DAILY-webb-audio-app-superJumbo-v3.jpg?quality=75&auto=webp"
+            src={info?.url}
           ></img>
           <div
             style={{
@@ -145,10 +153,11 @@ const Photo = () => {
                 marginLeft: '8px',
               }}
             >
-              <BigString>Full Moon Night In Lapland</BigString>
+              <BigString>{info?.title}</BigString>
               <div>
                 <span style={{ cursor: 'pointer' }}>
-                  by Carsten Meyerdierks<span>•</span>
+                  by {info?.memberResponseDto.email.split('@')[0]}
+                  <span>•</span>
                 </span>
 
                 <FollowButton
@@ -178,14 +187,16 @@ const Photo = () => {
           >
             <CiLocationOn size="24"></CiLocationOn>
             <p>
-              <span style={{ borderBottom: '1px dashed' }}>Finnland</span>
+              <span style={{ borderBottom: '1px dashed' }}>
+                {info?.location}
+              </span>
               <span style={{ fontWeight: '700', marginLeft: '24px' }}>
                 Uploaded{' '}
               </span>
               7 days ago
             </p>
           </div>
-          <TextWrap>www.instagram.com/carstenmeyerdierks</TextWrap>
+          <TextWrap>{info?.description}</TextWrap>
           <div
             style={{
               minHeight: '60px',
@@ -297,7 +308,8 @@ const Photo = () => {
             </span>
             <span>
               <TextClick>
-                Landscapes<BsChevronRight></BsChevronRight>
+                {info?.category}
+                <BsChevronRight />
               </TextClick>
             </span>
           </TextWrap>
@@ -360,7 +372,7 @@ const Photo = () => {
                       cursor: 'pointer',
                     }}
                   >
-                    Cancle
+                    Cancel
                   </button>
                   <StPostButton post={comment}>Post</StPostButton>
                 </div>
